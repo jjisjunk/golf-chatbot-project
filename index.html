@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Caddie AI — Golf Club Advisor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:       #0e1a0e;
+      --fairway:   #132613;
+      --rough:     #1c331c;
+      --turf:      #254825;
+      --moss:      #3a5e3a;
+      --brass:     #c9a84c;
+      --brass-dim: #9a7d38;
+      --brass-glow:#e8c96a;
+      --parchment: #f2ead8;
+      --cream:     #faf6ec;
+      --fog:       #c8bfa8;
+      --birch:     #8a7a62;
+      --flag:      #b83232;
+      --white:     #fdfcf8;
+      --serif:     'Playfair Display', Georgia, serif;
+      --body:      'Crimson Pro', Georgia, serif;
+      --mono:      'DM Mono', monospace;
+      --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--fairway);
+      color: var(--parchment);
+      font-family: var(--body);
+      overflow: hidden;
+    }
+
+    /* ═══════════════════════════════════════
+       ONBOARDING OVERLAY
+    ═══════════════════════════════════════ */
+    .onboard {
+      position: fixed; inset: 0; z-index: 200;
+      display: flex; align-items: stretch;
+      animation: ob-in .5s var(--ease-out) both;
+    }
+    .onboard.exit {
+      animation: ob-out .45s var(--ease-out) both;
+      pointer-events: none;
+    }
+    @keyframes ob-in  { from { opacity:0; } to { opacity:1; } }
+    @keyframes ob-out { from { opacity:1; } to { opacity:0; } }
+    .onboard.hidden { display: none; }
+
+    /* Left panel — atmosphere */
+    .ob-left {
+      flex: 0 0 42%;
+      background: var(--ink);
+      position: relative;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      padding: 48px 44px;
+    }
+    .ob-left-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 30% 40%, rgba(58,94,58,.45) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 80% at 80% 80%, rgba(201,168,76,.08) 0%, transparent 60%),
+        var(--ink);
+    }
+    /* Decorative golf course lines */
+    .ob-left-lines {
+      position: absolute; inset: 0; pointer-events: none;
+    }
+    .ob-left-lines svg { width: 100%; height: 100%; }
+
+    .ob-left-content { position: relative; z-index: 2; }
+    .ob-brand {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 48px;
+    }
+    .ob-flag {
+      width: 22px; height: 22px;
+      background: var(--flag);
+      clip-path: polygon(0 0,100% 18%,100% 82%,0 100%);
+      flex-shrink: 0;
+    }
+    .ob-brand-name {
+      font-family: var(--serif);
+      font-size: .8rem;
+      letter-spacing: .25em;
+      color: var(--brass);
+      text-transform: uppercase;
+      font-style: italic;
+    }
+
+    .ob-tagline {
+      font-family: var(--serif);
+      font-size: 2.6rem;
+      line-height: 1.2;
+      font-weight: 400;
+      color: var(--cream);
+      margin-bottom: 20px;
+    }
+    .ob-tagline em {
+      font-style: italic;
+      color: var(--brass);
+    }
+    .ob-sub {
+      font-family: var(--body);
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--fog);
+      line-height: 1.65;
+      max-width: 280px;
+    }
+
+    /* Step indicators */
+    .ob-steps {
+      position: absolute;
+      top: 48px; right: -1px;
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .ob-step-dot {
+      width: 3px; height: 40px;
+      background: rgba(201,168,76,.18);
+      transition: background .35s, height .35s var(--ease-out);
+      cursor: default;
+    }
+    .ob-step-dot.done  { background: rgba(201,168,76,.55); }
+    .ob-step-dot.active { background: var(--brass); height: 64px; }
+
+    /* Right panel — form */
+    .ob-right {
+      flex: 1;
+      background: var(--rough);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Progress bar */
+    .ob-progress {
+      height: 3px;
+      background: rgba(201,168,76,.12);
+      flex-shrink: 0;
+    }
+    .ob-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--brass-dim), var(--brass-glow));
+      transition: width .5s var(--ease-out);
+      border-radius: 0 2px 2px 0;
+    }
+
+    /* Step header */
+    .ob-step-header {
+      padding: 36px 44px 0;
+      flex-shrink: 0;
+    }
+    .ob-step-count {
+      font-family: var(--mono);
+      font-size: .6rem;
+      letter-spacing: .2em;
+      color: var(--brass-dim);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .ob-step-title {
+      font-family: var(--serif);
+      font-size: 1.75rem;
+      font-weight: 400;
+      color: var(--cream);
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+    .ob-step-hint {
+      font-family: var(--body);
+      font-size: .95rem;
+      font-weight: 300;
+      color: var(--birch);
+      line-height: 1.5;
+    }
+
+    /* Step content area */
+    .ob-step-body {
+      flex: 1;
+      padding: 28px 44px 0;
+      overflow-y: auto;
+      position: relative;
+    }
+    .ob-step-body::-webkit-scrollbar { width: 3px; }
+    .ob-step-body::-webkit-scrollbar-thumb { background: var(--turf); }
+
+    /* Step slide animation */
+    .ob-panel {
+      display: none;
+      animation: step-in .4s var(--ease-out) both;
+    }
+    .ob-panel.active { display: block; }
+    .ob-panel.exit-left { animation: step-out-left .3s var(--ease-out) both; }
+    @keyframes step-in      { from { opacity:0; transform:translateX(28px); } to { opacity:1; transform:translateX(0); } }
+    @keyframes step-out-left { from { opacity:1; transform:translateX(0); } to { opacity:0; transform:translateX(-24px); } }
+
+    /* ── Player type cards ── */
+    .player-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .player-card {
+      position: relative;
+      background: var(--turf);
+      border: 1.5px solid rgba(201,168,76,.12);
+      border-radius: 4px;
+      padding: 20px 18px 18px;
+      cursor: pointer;
+      transition: border-color .25s, background .25s, transform .2s var(--ease-out);
+      overflow: hidden;
+      text-align: left;
+    }
+    .player-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,.06) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity .25s;
+    }
+    .player-card:hover { border-color: rgba(201,168,76,.35); transform: translateY(-1px); }
+    .player-card:hover::before { opacity: 1; }
+    .player-card.selected {
+      border-color: var(--brass);
+      background: rgba(201,168,76,.1);
+    }
+    .player-card.selected::before { opacity: 1; }
+
+    .pc-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      display: block;
+      line-height: 1;
+      filter: grayscale(30%);
+      transition: filter .2s, transform .2s var(--ease-out);
+    }
+    .player-card:hover .pc-icon,
+    .player-card.selected .pc-icon { filter: none; transform: scale(1.08); }
+
+    .pc-title {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--cream);
+      display: block;
+      margin-bottom: 3px;
+    }
+    .pc-desc {
+      font-family: var(--body);
+      font-size: .82rem;
+      font-weight: 300;
+      color: var(--birch);
+      line-height: 1.45;
+    }
+    .pc-check {
+      position: absolute; top: 12px; right: 12px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(201,168,76,.3);
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s, border-color .2s;
+    }
+    .player-card.selected .pc-check {
+      background: var(--brass);
+      border-color: var(--brass);
+    }
+    .pc-check svg { opacity: 0; transition: opacity .15s; }
+    .player-card.selected .pc-check svg { opacity: 1; }
+
+    /* ── Skill level ── */
+    .skill-list { display: flex; flex-direction: column; gap: 8px; }
+    .skill-row {
+      display: flex; align-items: center; gap: 16px;
+      background: var(--turf);
+      border: 1.5px solid rgba(201,168,76,.12);
+      border-radius: 4px;
+      padding: 14px 18px;
+      cursor: pointer;
+      transition: border-color .25s, background .25s;
+      position: relative; overflow: hidden;
+    }
+    .skill-row::after {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--brass);
+      transform: scaleY(0);
+      transition: transform .25s var(--ease-out);
+      transform-origin: bottom;
+    }
+    .skill-row:hover { border-color: rgba(201,168,76,.3); }
+    .skill-row.selected { border-color: var(--brass); background: rgba(201,168,76,.08); }
+    .skill-row.selected::after { transform: scaleY(1); }
+
+    .skill-hcp {
+      font-family: var(--mono);
+      font-size: .68rem;
+      color: var(--brass);
+      background: rgba(201,168,76,.12);
+      border-radius: 2px;
+      padding: 3px 8px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      min-width: 68px;
+      text-align: center;
+    }
+    .skill-info { flex: 1; }
+    .skill-name {
+      font-family: var(--serif);
+      font-size: 1rem;
+      color: var(--cream);
+      display: block;
+      margin-bottom: 1px;
+    }
+    .skill-note {
+      font-family: var(--body);
+      font-size: .82rem;
+      font-weight: 300;
+      color: var(--birch);
+    }
+    .skill-row .pc-check { position: static; flex-shrink: 0; }
+    .skill-row.selected .pc-check { background: var(--brass); border-color: var(--brass); }
+    .skill-row.selected .pc-check svg { opacity: 1; }
+
+    /* ── Budget ── */
+    .budget-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .budget-card {
+      background: var(--turf);
+      border: 1.5px solid rgba(201,168,76,.12);
+      border-radius: 4px;
+      padding: 18px 14px 16px;
+      cursor: pointer;
+      transition: border-color .25s, background .25s, transform .2s var(--ease-out);
+      text-align: center;
+      position: relative;
+    }
+    .budget-card:hover { border-color: rgba(201,168,76,.35); transform: translateY(-1px); }
+    .budget-card.selected { border-color: var(--brass); background: rgba(201,168,76,.1); }
+    .bc-icon { font-size: 1.6rem; display: block; margin-bottom: 8px; }
+    .bc-label {
+      font-family: var(--serif);
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--cream);
+      display: block;
+      margin-bottom: 3px;
+    }
+    .bc-note {
+      font-family: var(--body);
+      font-size: .78rem;
+      font-weight: 300;
+      color: var(--birch);
+      line-height: 1.4;
+    }
+    .bc-tag {
+      position: absolute; top: -1px; right: 10px;
+      font-family: var(--mono); font-size: .5rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      background: var(--brass); color: var(--ink);
+      padding: 2px 6px; border-radius: 0 0 3px 3px;
+    }
+    .budget-card .pc-check {
+      position: absolute; top: 10px; left: 12px;
+    }
+
+    /* ── Additional preferences (Step 4) ── */
+    .pref-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .pref-chip {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--turf);
+      border: 1.5px solid rgba(201,168,76,.12);
+      border-radius: 4px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: border-color .25s, background .25s;
+    }
+    .pref-chip:hover { border-color: rgba(201,168,76,.3); }
+    .pref-chip.selected { border-color: var(--brass); background: rgba(201,168,76,.08); }
+    .pref-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .pref-text { flex: 1; }
+    .pref-name {
+      font-family: var(--body);
+      font-size: .9rem;
+      font-weight: 400;
+      color: var(--cream);
+      display: block;
+    }
+    .pref-desc {
+      font-family: var(--body);
+      font-size: .75rem;
+      font-weight: 300;
+      color: var(--birch);
+    }
+    .pref-chip .pc-check { flex-shrink: 0; }
+    .pref-chip.selected .pc-check { background: var(--brass); border-color: var(--brass); }
+    .pref-chip.selected .pc-check svg { opacity: 1; }
+
+    /* ── Footer nav ── */
+    .ob-footer {
+      padding: 20px 44px 32px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+      border-top: 1px solid rgba(201,168,76,.08);
+    }
+    .ob-back {
+      background: none;
+      border: 1.5px solid rgba(201,168,76,.2);
+      border-radius: 3px;
+      color: var(--birch);
+      font-family: var(--mono);
+      font-size: .62rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      padding: 11px 18px;
+      cursor: pointer;
+      transition: border-color .2s, color .2s;
+    }
+    .ob-back:hover { border-color: rgba(201,168,76,.45); color: var(--fog); }
+    .ob-next {
+      flex: 1;
+      background: var(--brass);
+      border: none;
+      border-radius: 3px;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      padding: 13px 24px;
+      cursor: pointer;
+      transition: background .2s, transform .1s, box-shadow .2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .ob-next:hover {
+      background: var(--brass-glow);
+      box-shadow: 0 4px 20px rgba(201,168,76,.25);
+    }
+    .ob-next:active { transform: scale(.98); }
+    .ob-next:disabled { background: var(--moss); color: var(--birch); cursor: not-allowed; box-shadow: none; }
+    .ob-next svg { transition: transform .2s; }
+    .ob-next:not(:disabled):hover svg { transform: translateX(3px); }
+
+    .ob-skip {
+      font-family: var(--mono);
+      font-size: .58rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--birch);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      transition: color .2s;
+      white-space: nowrap;
+    }
+    .ob-skip:hover { color: var(--fog); }
+
+    /* ═══════════════════════════════════════
+       CHAT APP
+    ═══════════════════════════════════════ */
+    .app {
+      display: flex; flex-direction: column;
+      height: 100dvh;
+      max-width: 860px; margin: 0 auto;
+    }
+
+    header {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 24px;
+      border-bottom: 1px solid rgba(201,168,76,.18);
+      background: var(--fairway);
+      position: sticky; top: 0; z-index: 10; flex-shrink: 0;
+    }
+    .flag-icon { width: 24px; height: 24px; background: var(--flag); clip-path: polygon(0 0,100% 18%,100% 82%,0 100%); flex-shrink: 0; }
+    header h1 { font-family: var(--serif); font-size: 1.35rem; font-weight: 400; color: var(--brass); font-style: italic; }
+    header h1 span { font-family: var(--mono); font-size: .6rem; color: var(--birch); letter-spacing: .14em; font-style: normal; margin-left: 8px; }
+
+    .profile-pill {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(201,168,76,.08);
+      border: 1px solid rgba(201,168,76,.18);
+      border-radius: 20px;
+      padding: 4px 10px 4px 8px;
+      font-family: var(--mono);
+      font-size: .58rem;
+      letter-spacing: .1em;
+      color: var(--brass-dim);
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background .2s, border-color .2s;
+    }
+    .profile-pill:hover { background: rgba(201,168,76,.14); border-color: rgba(201,168,76,.35); }
+    .profile-pill-dot { width: 6px; height: 6px; background: var(--brass); border-radius: 50%; }
+    .badge { font-family: var(--mono); font-size: .55rem; color: var(--flag); border: 1px solid rgba(184,50,50,.4); border-radius: 2px; padding: 2px 6px; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
+
+    .messages { flex: 1; overflow-y: auto; padding: 22px 22px 8px; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
+    .messages::-webkit-scrollbar { width: 3px; }
+    .messages::-webkit-scrollbar-thumb { background: var(--turf); border-radius: 2px; }
+
+    .msg { display: flex; flex-direction: column; gap: 4px; animation: fadeUp .3s var(--ease-out) both; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    .msg.user { align-items: flex-end; }
+    .msg.assistant { align-items: flex-start; }
+    .bubble { max-width: 80%; padding: 11px 16px; border-radius: 3px; font-family: var(--body); font-size: 1rem; font-weight: 300; line-height: 1.72; white-space: pre-wrap; word-break: break-word; }
+    .msg.user .bubble { background: var(--rough); border: 1px solid rgba(201,168,76,.15); color: var(--parchment); border-bottom-right-radius: 0; }
+    .msg.assistant .bubble { background: var(--turf); border: 1px solid rgba(201,168,76,.1); color: var(--white); border-bottom-left-radius: 0; }
+    .label { font-family: var(--mono); font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; color: var(--birch); }
+
+    .typing .bubble { display: flex; align-items: center; gap: 5px; padding: 14px 16px; }
+    .dot { width: 6px; height: 6px; background: var(--brass); border-radius: 50%; animation: bounce .9s infinite ease-in-out; }
+    .dot:nth-child(2) { animation-delay: .18s; }
+    .dot:nth-child(3) { animation-delay: .36s; }
+    @keyframes bounce { 0%,80%,100%{transform:translateY(0);opacity:.4} 40%{transform:translateY(-6px);opacity:1} }
+
+    .chips-wrap { padding: 0 22px 8px; display: flex; flex-wrap: wrap; gap: 6px; flex-shrink: 0; }
+    .chip { font-family: var(--mono); font-size: .58rem; letter-spacing: .09em; text-transform: uppercase; color: var(--brass-dim); border: 1px solid rgba(201,168,76,.2); border-radius: 20px; padding: 5px 12px; cursor: pointer; transition: border-color .2s, color .2s, background .2s; background: none; }
+    .chip:hover { color: var(--brass); border-color: rgba(201,168,76,.5); background: rgba(201,168,76,.06); }
+
+    .input-bar { padding: 10px 22px 18px; border-top: 1px solid rgba(201,168,76,.12); background: var(--fairway); display: flex; gap: 10px; align-items: flex-end; flex-shrink: 0; }
+    textarea { flex: 1; background: var(--rough); border: 1.5px solid rgba(201,168,76,.15); border-radius: 3px; color: var(--parchment); font-family: var(--body); font-size: .98rem; font-weight: 300; line-height: 1.55; padding: 10px 13px; resize: none; min-height: 44px; max-height: 120px; outline: none; transition: border-color .2s; }
+    textarea::placeholder { color: var(--birch); }
+    textarea:focus { border-color: rgba(201,168,76,.45); }
+    button.send { background: var(--brass); border: none; border-radius: 3px; color: var(--ink); font-family: var(--mono); font-size: .65rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; padding: 10px 18px; cursor: pointer; transition: background .2s, transform .1s, box-shadow .2s; white-space: nowrap; height: 44px; }
+    button.send:hover { background: var(--brass-glow); box-shadow: 0 3px 14px rgba(201,168,76,.2); }
+    button.send:active { transform: scale(.97); }
+    button.send:disabled { background: var(--moss); color: var(--birch); cursor: not-allowed; box-shadow: none; }
+
+    .error-banner { font-family: var(--mono); font-size: .65rem; color: #d97070; text-align: center; padding: 5px 22px; display: none; flex-shrink: 0; }
+    .error-banner.show { display: block; }
+
+    @media (max-width: 640px) {
+      .ob-left { display: none; }
+      .ob-step-header { padding: 28px 24px 0; }
+      .ob-step-body { padding: 20px 24px 0; }
+      .ob-footer { padding: 16px 24px 24px; }
+      .player-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .budget-grid { grid-template-columns: 1fr; }
+      .pref-grid { grid-template-columns: 1fr; }
+      header h1 span { display: none; }
+      .bubble { max-width: 92%; }
+    }
+
+    /* ── API Key banner ── */
+    .key-banner {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 24px;
+      background: rgba(184,50,50,.08);
+      border-bottom: 1px solid rgba(184,50,50,.2);
+      flex-shrink: 0;
+    }
+    .key-banner.hidden { display: none; }
+    .key-banner-icon { font-size: .9rem; flex-shrink: 0; }
+    .key-banner p {
+      font-family: var(--mono); font-size: .6rem;
+      letter-spacing: .08em; color: var(--fog);
+      flex: 1; line-height: 1.5;
+    }
+    .key-banner p a { color: var(--brass); text-decoration: none; }
+    .key-banner p a:hover { text-decoration: underline; }
+    .key-input-wrap { display: flex; gap: 6px; flex-shrink: 0; }
+    .key-input {
+      background: var(--rough); border: 1px solid rgba(201,168,76,.25);
+      border-radius: 2px; color: var(--parchment);
+      font-family: var(--mono); font-size: .62rem;
+      padding: 6px 10px; outline: none; width: 220px;
+      transition: border-color .2s;
+    }
+    .key-input:focus { border-color: rgba(201,168,76,.5); }
+    .key-input::placeholder { color: var(--birch); }
+    .key-save {
+      background: var(--brass); border: none; border-radius: 2px;
+      color: var(--ink); font-family: var(--mono); font-size: .6rem;
+      font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+      padding: 6px 12px; cursor: pointer; transition: background .2s;
+      white-space: nowrap;
+    }
+    .key-save:hover { background: var(--brass-glow); }
+    @media (max-width: 640px) {
+      .key-banner { flex-wrap: wrap; }
+      .key-input { width: 160px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ ONBOARDING ═══════════════ -->
+<div class="onboard" id="onboard" role="dialog" aria-modal="true" aria-labelledby="ob-title">
+
+  <!-- Left atmosphere panel -->
+  <div class="ob-left" aria-hidden="true">
+    <div class="ob-left-bg"></div>
+    <div class="ob-left-lines">
+      <svg viewBox="0 0 420 700" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <ellipse cx="210" cy="350" rx="300" ry="500" stroke="rgba(201,168,76,.04)" stroke-width="1"/>
+        <ellipse cx="210" cy="350" rx="220" ry="380" stroke="rgba(201,168,76,.05)" stroke-width="1"/>
+        <ellipse cx="210" cy="350" rx="140" ry="260" stroke="rgba(201,168,76,.06)" stroke-width="1"/>
+        <line x1="0" y1="700" x2="420" y2="0" stroke="rgba(58,94,58,.15)" stroke-width="1"/>
+        <line x1="0" y1="600" x2="420" y2="100" stroke="rgba(58,94,58,.08)" stroke-width="1"/>
+        <circle cx="210" cy="350" r="8" fill="rgba(201,168,76,.15)"/>
+        <circle cx="210" cy="350" r="3" fill="rgba(201,168,76,.4)"/>
+        <line x1="210" y1="342" x2="210" y2="200" stroke="rgba(201,168,76,.3)" stroke-width="1.5"/>
+        <polygon points="210,195 205,210 215,210" fill="rgba(184,50,50,.7)"/>
+      </svg>
+    </div>
+
+    <!-- Step dots -->
+    <div class="ob-steps" id="obStepDots">
+      <div class="ob-step-dot active" data-s="0"></div>
+      <div class="ob-step-dot" data-s="1"></div>
+      <div class="ob-step-dot" data-s="2"></div>
+      <div class="ob-step-dot" data-s="3"></div>
+    </div>
+
+    <div class="ob-left-content">
+      <div class="ob-brand">
+        <div class="ob-flag"></div>
+        <span class="ob-brand-name">Caddie AI</span>
+      </div>
+      <h2 class="ob-tagline" id="ob-title">Your <em>personal</em><br>club advisor</h2>
+      <p class="ob-sub">Answer a few quick questions and I'll tailor every recommendation to your exact game, budget, and goals.</p>
+    </div>
+  </div>
+
+  <!-- Right form panel -->
+  <div class="ob-right">
+    <div class="ob-progress">
+      <div class="ob-progress-fill" id="obProgress" style="width:25%"></div>
+    </div>
+
+    <div class="ob-step-header">
+      <div class="ob-step-count" id="obStepCount">Step 1 of 4</div>
+      <h3 class="ob-step-title" id="obStepTitle">Who's picking up the clubs?</h3>
+      <p class="ob-step-hint" id="obStepHint">Choose the option that best describes the golfer. This shapes every recommendation.</p>
+    </div>
+
+    <div class="ob-step-body" id="obBody">
+
+      <!-- STEP 1: Player type -->
+      <div class="ob-panel active" id="step1">
+        <div class="player-grid">
+          <button class="player-card" data-group="playerType" data-val="junior" onclick="selectCard(this)" aria-pressed="false">
+            <div class="pc-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span class="pc-icon">🧒</span>
+            <span class="pc-title">Junior</span>
+            <span class="pc-desc">Ages 6–17. Lightweight sets built for developing swings.</span>
+          </button>
+          <button class="player-card" data-group="playerType" data-val="beginner-adult" onclick="selectCard(this)" aria-pressed="false">
+            <div class="pc-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span class="pc-icon">🌱</span>
+            <span class="pc-title">New Golfer</span>
+            <span class="pc-desc">Just starting out. Forgiveness and fun over precision.</span>
+          </button>
+          <button class="player-card" data-group="playerType" data-val="recreational" onclick="selectCard(this)" aria-pressed="false">
+            <div class="pc-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span class="pc-icon">⛳</span>
+            <span class="pc-title">Recreational</span>
+            <span class="pc-desc">Casual rounds a few times a month. Mid-handicap territory.</span>
+          </button>
+          <button class="player-card" data-group="playerType" data-val="competitive" onclick="selectCard(this)" aria-pressed="false">
+            <div class="pc-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span class="pc-icon">🏆</span>
+            <span class="pc-title">Competitive</span>
+            <span class="pc-desc">Low handicap. Cares about workability and shot shaping.</span>
+          </button>
+          <button class="player-card" data-group="playerType" data-val="senior" onclick="selectCard(this)" aria-pressed="false" style="grid-column: span 2;">
+            <div class="pc-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span class="pc-icon">🌅</span>
+            <span class="pc-title">Senior Golfer</span>
+            <span class="pc-desc">Prioritising lightweight, senior-flex clubs that maximise distance at moderate swing speeds. Age 55+.</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Skill / handicap (hidden for junior) -->
+      <div class="ob-panel" id="step2">
+        <div class="skill-list">
+          <button class="skill-row" data-group="skill" data-val="beginner" onclick="selectCard(this)" aria-pressed="false">
+            <span class="skill-hcp">HCP 28–54</span>
+            <span class="skill-info">
+              <span class="skill-name">High Handicap</span>
+              <span class="skill-note">Miss the centre often. Need maximum forgiveness.</span>
+            </span>
+            <div class="pc-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </button>
+          <button class="skill-row" data-group="skill" data-val="mid" onclick="selectCard(this)" aria-pressed="false">
+            <span class="skill-hcp">HCP 12–27</span>
+            <span class="skill-info">
+              <span class="skill-name">Mid Handicap</span>
+              <span class="skill-note">Consistent but not perfect. Balance of forgiveness and control.</span>
+            </span>
+            <div class="pc-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </button>
+          <button class="skill-row" data-group="skill" data-val="low" onclick="selectCard(this)" aria-pressed="false">
+            <span class="skill-hcp">HCP 5–11</span>
+            <span class="skill-info">
+              <span class="skill-name">Low Handicap</span>
+              <span class="skill-note">Solid ballstriker. Wants feel and workability.</span>
+            </span>
+            <div class="pc-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </button>
+          <button class="skill-row" data-group="skill" data-val="scratch" onclick="selectCard(this)" aria-pressed="false">
+            <span class="skill-hcp">HCP 0–4</span>
+            <span class="skill-info">
+              <span class="skill-name">Scratch / Tour Level</span>
+              <span class="skill-note">Plays blades or muscle-backs. Precision over forgiveness.</span>
+            </span>
+            <div class="pc-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </button>
+          <button class="skill-row" data-group="skill" data-val="unknown" onclick="selectCard(this)" aria-pressed="false">
+            <span class="skill-hcp">Not Sure</span>
+            <span class="skill-info">
+              <span class="skill-name">I Don't Know My Handicap</span>
+              <span class="skill-note">No problem — I'll ask a couple of questions to figure it out.</span>
+            </span>
+            <div class="pc-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Budget -->
+      <div class="ob-panel" id="step3">
+        <div class="budget-grid">
+          <button class="budget-card" data-group="budget" data-val="value" onclick="selectCard(this)" aria-pressed="false">
+            <div class="pc-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span class="bc-icon">💰</span>
+            <span class="bc-label">Value / Used</span>
+            <span class="bc-note">Older-gen or certified pre-owned. Best bang for buck.</span>
+          </button>
+          <button class="budget-card" data-group="budget" data-val="mid-range" onclick="selectCard(this)" aria-pressed="false">
+            <span class="bc-tag">Popular</span>
+            <div class="pc-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span class="bc-icon">⚖️</span>
+            <span class="bc-label">Mid-Range</span>
+            <span class="bc-note">1–2 generations back. Great tech, sane price.</span>
+          </button>
+          <button class="budget-card" data-group="budget" data-val="premium" onclick="selectCard(this)" aria-pressed="false">
+            <div class="pc-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span class="bc-icon">✨</span>
+            <span class="bc-label">Premium</span>
+            <span class="bc-note">2024–2025 releases. Latest and greatest, full price.</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 4: Preferences -->
+      <div class="ob-panel" id="step4">
+        <div class="pref-grid">
+          <button class="pref-chip" data-group="pref" data-val="lightweight" onclick="togglePref(this)" aria-pressed="false">
+            <span class="pref-icon">🪶</span>
+            <span class="pref-text">
+              <span class="pref-name">Lightweight clubs</span>
+              <span class="pref-desc">Graphite shafts, lighter heads</span>
+            </span>
+            <div class="pc-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </button>
+          <button class="pref-chip" data-group="pref" data-val="female-fit" onclick="togglePref(this)" aria-pressed="false">
+            <span class="pref-icon">🎯</span>
+            <span class="pref-text">
+              <span class="pref-name">Female-fit options</span>
+              <span class="pref-desc">Ladies flex, shorter lengths</span>
+            </span>
+            <div class="pc-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </button>
+          <button class="pref-chip" data-group="pref" data-val="starter-set" onclick="togglePref(this)" aria-pressed="false">
+            <span class="pref-icon">🛍️</span>
+            <span class="pref-text">
+              <span class="pref-name">Full starter set</span>
+              <span class="pref-desc">Everything in one bag</span>
+            </span>
+            <div class="pc-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </button>
+          <button class="pref-chip" data-group="pref" data-val="used-market" onclick="togglePref(this)" aria-pressed="false">
+            <span class="pref-icon">♻️</span>
+            <span class="pref-text">
+              <span class="pref-name">Open to used / CPO</span>
+              <span class="pref-desc">Certified pre-owned is fine</span>
+            </span>
+            <div class="pc-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </button>
+          <button class="pref-chip" data-group="pref" data-val="fitting" onclick="togglePref(this)" aria-pressed="false">
+            <span class="pref-icon">📐</span>
+            <span class="pref-text">
+              <span class="pref-name">Club fitting minded</span>
+              <span class="pref-desc">Custom shafts, lie angles</span>
+            </span>
+            <div class="pc-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </button>
+          <button class="pref-chip" data-group="pref" data-val="slow-swing" onclick="togglePref(this)" aria-pressed="false">
+            <span class="pref-icon">🐢</span>
+            <span class="pref-text">
+              <span class="pref-name">Slower swing speed</span>
+              <span class="pref-desc">Under 80 mph driver speed</span>
+            </span>
+            <div class="pc-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /ob-step-body -->
+
+    <div class="ob-footer">
+      <button class="ob-back" id="obBack" onclick="obPrev()" style="display:none">← Back</button>
+      <button class="ob-next" id="obNext" onclick="obNext()" disabled aria-disabled="true">
+        Continue
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="ob-skip" id="obSkip" onclick="skipStep()">Skip</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ CHAT ═══════════════ -->
+<div class="app">
+  <header>
+    <div class="flag-icon" aria-hidden="true"></div>
+    <h1>Caddie AI <span>/ Club Advisor</span></h1>
+    <div class="profile-pill" id="profilePill" onclick="reopenOnboard()" title="Edit your profile" style="display:none">
+      <div class="profile-pill-dot"></div>
+      <span id="profileLabel">My Profile</span>
+    </div>
+    <div class="badge" aria-label="Test build" style="margin-left:8px">⚠ Test</div>
+  </header>
+
+  <!-- API Key Banner — shown when no key is stored -->
+  <div class="key-banner" id="keyBanner">
+    <span class="key-banner-icon">🔑</span>
+    <p>An Anthropic API key is required to use Caddie AI.<br>
+    Get one at <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>. 
+    Your key is stored in this browser tab only and never sent anywhere except Anthropic.</p>
+    <div class="key-input-wrap">
+      <input class="key-input" id="keyInput" type="password"
+        placeholder="sk-ant-…" aria-label="Anthropic API key"
+        onkeydown="if(event.key==='Enter')saveKey()" />
+      <button class="key-save" onclick="saveKey()">Save Key</button>
+    </div>
+  </div>
+  <div class="messages" id="messages" role="log" aria-live="polite" aria-label="Conversation"></div>
+  <div class="chips-wrap" id="chips" aria-label="Suggested questions"></div>
+  <div class="error-banner" id="errorBanner" role="alert"></div>
+  <div class="input-bar">
+    <textarea id="input" rows="1" placeholder="Ask about clubs, specs, or recommendations…"
+      aria-label="Your message" onkeydown="handleKey(event)" oninput="autoGrow(this)"></textarea>
+    <button class="send" id="sendBtn" onclick="sendMessage()" aria-label="Send message">Send</button>
+  </div>
+</div>
+
+<script>
+// ── Club data (v2 enriched — representative subset embedded) ────────────────
+// Full dataset loaded from GolfClubSpecs_v2.json structure
+const CLUB_DATA = {"TaylorMade_Drivers":[{"brand":"TaylorMade","name":"Burner SuperFast","type":"Driver","forgiveness_level":"High","swing_speed_range":[75,100],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"graphite","loft_options":[9.5,10.5,13.0],"release_year":2010,"gender":"Unisex","budget_tier":"value","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","senior","high-handicap","value-shopper","used-market"],"recommended_handicap_range":[18,54],"lightweight":true,"junior_suitable":false,"starter_set_suitable":true,"club_weight_category":"light","commonly_paired_with":["Burner 2.0 Irons","RocketBallz Irons"]},{"brand":"TaylorMade","name":"M4","type":"Driver","forgiveness_level":"High","swing_speed_range":[85,105],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"graphite","loft_options":[9.5,10.5,12.0],"release_year":2018,"gender":"Unisex","budget_tier":"mid-range","skill_level":"intermediate","player_type":["adult","senior"],"target_audience":["intermediate","beginner","senior","used-market"],"recommended_handicap_range":[12,30],"lightweight":false,"junior_suitable":false,"starter_set_suitable":true,"club_weight_category":"standard","commonly_paired_with":["M4 Irons","M2 Irons"]},{"brand":"TaylorMade","name":"SIM Max","type":"Driver","forgiveness_level":"High","swing_speed_range":[85,105],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"graphite","loft_options":[9.0,10.5,12.0],"release_year":2020,"gender":"Unisex","budget_tier":"mid-range","skill_level":"intermediate","player_type":["adult","senior"],"target_audience":["intermediate","beginner","senior","used-market"],"recommended_handicap_range":[10,28],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["SIM Max Irons","M4 Irons"]},{"brand":"TaylorMade","name":"SIM Max D","type":"Driver","forgiveness_level":"Very High","swing_speed_range":[75,100],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"graphite","loft_options":[9.0,10.5,12.0],"release_year":2020,"gender":"Unisex","budget_tier":"mid-range","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","senior","high-handicap","used-market"],"recommended_handicap_range":[20,54],"lightweight":false,"junior_suitable":false,"starter_set_suitable":true,"club_weight_category":"standard","commonly_paired_with":["SIM Max Irons","Stealth HD Irons"]},{"brand":"TaylorMade","name":"Qi10","type":"Driver","forgiveness_level":"High","swing_speed_range":[85,105],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"graphite","loft_options":[9.0,10.5,12.0],"release_year":2024,"gender":"Unisex","budget_tier":"premium","skill_level":"intermediate","player_type":["adult","senior"],"target_audience":["intermediate","beginner","senior"],"recommended_handicap_range":[8,24],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["Qi Irons","Stealth HD Irons"]},{"brand":"TaylorMade","name":"Qi10 Max","type":"Driver","forgiveness_level":"Very High","swing_speed_range":[75,100],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"graphite","loft_options":[9.0,10.5,12.0],"release_year":2024,"gender":"Unisex","budget_tier":"premium","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","senior","high-handicap"],"recommended_handicap_range":[18,54],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["Qi Irons","Stealth HD Irons"]},{"brand":"TaylorMade","name":"Qi35 Max Lite","type":"Driver","forgiveness_level":"Extremely High","swing_speed_range":[60,85],"shaft_flex_options":["Senior"],"shaft_material":"graphite","loft_options":[10.5,12.0],"release_year":2025,"gender":"Unisex","budget_tier":"premium","skill_level":"beginner","player_type":["senior"],"target_audience":["beginner","senior","high-handicap","slow-swing"],"recommended_handicap_range":[28,54],"lightweight":true,"junior_suitable":false,"starter_set_suitable":true,"club_weight_category":"light","commonly_paired_with":["Stealth HD Irons","Qi Irons"]},{"brand":"TaylorMade","name":"Qi35","type":"Driver","forgiveness_level":"Moderate","swing_speed_range":[85,105],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"graphite","loft_options":[9.0,10.5,12.0],"release_year":2025,"gender":"Unisex","budget_tier":"premium","skill_level":"intermediate","player_type":["adult"],"target_audience":["intermediate","competitive"],"recommended_handicap_range":[6,18],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["P770 Irons","Qi Irons"]},{"brand":"TaylorMade","name":"Qi35 LS","type":"Driver","forgiveness_level":"Low","swing_speed_range":[95,115],"shaft_flex_options":["Regular","Stiff","X-Stiff"],"shaft_material":"graphite","loft_options":[8.0,9.0,10.5],"release_year":2025,"gender":"Unisex","budget_tier":"premium","skill_level":"advanced","player_type":["adult"],"target_audience":["advanced","low-handicap","competitive"],"recommended_handicap_range":[0,6],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["P7CB Irons","P770 Irons"]},{"brand":"TaylorMade","name":"Qi10 LS","type":"Driver","forgiveness_level":"Low","swing_speed_range":[95,115],"shaft_flex_options":["Regular","Stiff","X-Stiff"],"shaft_material":"graphite","loft_options":[8.0,9.0,10.5],"release_year":2024,"gender":"Unisex","budget_tier":"premium","skill_level":"advanced","player_type":["adult"],"target_audience":["advanced","low-handicap","competitive"],"recommended_handicap_range":[0,8],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["P7CB Irons","P770 Irons"]}],"TaylorMade_Irons":[{"brand":"TaylorMade","name":"Burner 2.0 Irons","type":"Iron","forgiveness_level":"High","swing_speed_range":[70,95],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"both","loft_options":[21.0,24.0,28.0,32.0,36.0,40.0,45.0],"release_year":2010,"gender":"Unisex","budget_tier":"value","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","senior","high-handicap","value-shopper","used-market"],"recommended_handicap_range":[18,54],"lightweight":false,"junior_suitable":false,"starter_set_suitable":true,"club_weight_category":"standard","commonly_paired_with":["Burner SuperFast Driver","RocketBallz Driver"]},{"brand":"TaylorMade","name":"M4 Irons","type":"Iron","forgiveness_level":"High","swing_speed_range":[75,100],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"both","loft_options":[19.0,21.5,25.0,28.5,33.0,38.0,43.5],"release_year":2018,"gender":"Unisex","budget_tier":"mid-range","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","senior","high-handicap","used-market"],"recommended_handicap_range":[14,36],"lightweight":false,"junior_suitable":false,"starter_set_suitable":true,"club_weight_category":"standard","commonly_paired_with":["M4 Driver","SIM Max Driver"]},{"brand":"TaylorMade","name":"P790 Irons (2021)","type":"Iron","forgiveness_level":"Moderate","swing_speed_range":[88,110],"shaft_flex_options":["Regular","Stiff","X-Stiff"],"shaft_material":"both","loft_options":[22.0,25.0,29.0,33.0,38.0,43.0,49.0],"release_year":2021,"gender":"Unisex","budget_tier":"premium","skill_level":"intermediate","player_type":["adult"],"target_audience":["intermediate","competitive","fitter","used-market"],"recommended_handicap_range":[5,15],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["Qi35 Driver","Stealth 2 Driver"]},{"brand":"TaylorMade","name":"Stealth HD Irons","type":"Iron","forgiveness_level":"High","swing_speed_range":[65,90],"shaft_flex_options":["Senior","Regular"],"shaft_material":"graphite","loft_options":[20.0,23.5,27.0,31.5,36.5,42.0,48.0],"release_year":2023,"gender":"Unisex","budget_tier":"mid-range","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","senior","high-handicap","slow-swing"],"recommended_handicap_range":[20,54],"lightweight":true,"junior_suitable":false,"starter_set_suitable":true,"club_weight_category":"light","commonly_paired_with":["Stealth 2 HD Driver","Qi10 Max Driver","Qi35 Max Lite Driver"]},{"brand":"TaylorMade","name":"Qi Irons","type":"Iron","forgiveness_level":"High","swing_speed_range":[72,100],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"both","loft_options":[18.5,21.0,24.0,28.0,32.0,37.0,43.0],"release_year":2024,"gender":"Unisex","budget_tier":"premium","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","senior","high-handicap"],"recommended_handicap_range":[16,54],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["Qi10 Driver","Qi10 Max Driver"]},{"brand":"TaylorMade","name":"P7CB Irons","type":"Iron","forgiveness_level":"Low","swing_speed_range":[95,115],"shaft_flex_options":["Stiff","X-Stiff"],"shaft_material":"steel","loft_options":[21.0,24.0,28.0,32.0,36.0,41.0,47.0],"release_year":2025,"gender":"Unisex","budget_tier":"premium","skill_level":"advanced","player_type":["adult"],"target_audience":["advanced","low-handicap","competitive","tour-level"],"recommended_handicap_range":[0,6],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"heavy","commonly_paired_with":["Qi35 LS Driver","Qi10 LS Driver"]},{"brand":"TaylorMade","name":"P770 Irons (2023)","type":"Iron","forgiveness_level":"Moderate","swing_speed_range":[88,110],"shaft_flex_options":["Regular","Stiff","X-Stiff"],"shaft_material":"both","loft_options":[22.5,25.5,29.5,33.5,38.0,43.0,49.0],"release_year":2023,"gender":"Unisex","budget_tier":"premium","skill_level":"intermediate","player_type":["adult"],"target_audience":["intermediate","competitive","fitter"],"recommended_handicap_range":[4,14],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["Qi35 Driver","Qi35 LS Driver"]}],"Callaway_Drivers":[{"brand":"Callaway","name":"Rogue ST Max","type":"Driver","forgiveness_level":"High","swing_speed_range":[80,100],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"graphite","loft_options":[9.0,10.5,12.0],"release_year":2022,"gender":"Unisex","budget_tier":"mid-range","skill_level":"intermediate","player_type":["adult","senior"],"target_audience":["intermediate","beginner","senior","used-market"],"recommended_handicap_range":[10,28],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["Rogue ST Max Irons","Mavrik Irons"]},{"brand":"Callaway","name":"Paradym Ai Smoke Max","type":"Driver","forgiveness_level":"High","swing_speed_range":[80,100],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"graphite","loft_options":[9.0,10.5,12.0],"release_year":2024,"gender":"Unisex","budget_tier":"premium","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","intermediate","senior"],"recommended_handicap_range":[12,30],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["Paradym Ai Smoke Irons","Rogue ST Max Irons"]},{"brand":"Callaway","name":"Elyte","type":"Driver","forgiveness_level":"High","swing_speed_range":[80,100],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"graphite","loft_options":[9.0,10.5,12.0],"release_year":2025,"gender":"Unisex","budget_tier":"premium","skill_level":"intermediate","player_type":["adult","senior"],"target_audience":["beginner","intermediate","senior"],"recommended_handicap_range":[10,28],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["Elyte Irons","Paradym Ai Smoke Irons"]}],"Callaway_Irons":[{"brand":"Callaway","name":"Rogue ST Max Irons","type":"Iron","forgiveness_level":"High","swing_speed_range":[75,100],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"both","loft_options":[19.0,22.0,25.0,28.0,32.0,37.0,42.0],"release_year":2022,"gender":"Unisex","budget_tier":"mid-range","skill_level":"intermediate","player_type":["adult","senior"],"target_audience":["intermediate","beginner","senior","used-market"],"recommended_handicap_range":[12,28],"lightweight":false,"junior_suitable":false,"starter_set_suitable":true,"club_weight_category":"standard","commonly_paired_with":["Rogue ST Max Driver","Paradym Driver"]},{"brand":"Callaway","name":"Paradym Ai Smoke Irons","type":"Iron","forgiveness_level":"High","swing_speed_range":[78,100],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"both","loft_options":[19.0,22.0,25.0,28.5,33.0,38.0,43.0],"release_year":2024,"gender":"Unisex","budget_tier":"premium","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","intermediate","senior"],"recommended_handicap_range":[12,36],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["Paradym Ai Smoke Max Driver","Elyte Driver"]},{"brand":"Callaway","name":"Apex Irons (2021)","type":"Iron","forgiveness_level":"Moderate","swing_speed_range":[85,108],"shaft_flex_options":["Regular","Stiff","X-Stiff"],"shaft_material":"both","loft_options":[21.0,24.0,27.5,31.0,35.0,39.5,44.5],"release_year":2021,"gender":"Unisex","budget_tier":"premium","skill_level":"intermediate","player_type":["adult"],"target_audience":["intermediate","competitive","fitter","used-market"],"recommended_handicap_range":[5,16],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["Paradym Driver","Epic Speed Driver"]}],"Titleist_Drivers":[{"brand":"Titleist","name":"TSR2","type":"Driver","forgiveness_level":"Moderate","swing_speed_range":[85,108],"shaft_flex_options":["Regular","Stiff","X-Stiff"],"shaft_material":"graphite","loft_options":[8.0,9.0,10.0,11.0],"release_year":2022,"gender":"Unisex","budget_tier":"premium","skill_level":"intermediate","player_type":["adult"],"target_audience":["intermediate","competitive","used-market"],"recommended_handicap_range":[5,18],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["T300 Irons","T200 Irons"]},{"brand":"Titleist","name":"GT2","type":"Driver","forgiveness_level":"Moderate","swing_speed_range":[85,108],"shaft_flex_options":["Regular","Stiff","X-Stiff"],"shaft_material":"graphite","loft_options":[8.0,9.0,10.0,11.0],"release_year":2024,"gender":"Unisex","budget_tier":"premium","skill_level":"intermediate","player_type":["adult"],"target_audience":["intermediate","competitive"],"recommended_handicap_range":[5,16],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["T200 Irons","T300 Irons"]},{"brand":"Titleist","name":"GT3","type":"Driver","forgiveness_level":"Low","swing_speed_range":[95,118],"shaft_flex_options":["Stiff","X-Stiff"],"shaft_material":"graphite","loft_options":[8.0,9.0,10.0],"release_year":2024,"gender":"Unisex","budget_tier":"premium","skill_level":"advanced","player_type":["adult"],"target_audience":["advanced","low-handicap","competitive","tour-level"],"recommended_handicap_range":[0,5],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["T100 Irons","T100S Irons"]}],"Titleist_Irons":[{"brand":"Titleist","name":"T300 Irons (2021)","type":"Iron","forgiveness_level":"High","swing_speed_range":[78,100],"shaft_flex_options":["Regular","Stiff"],"shaft_material":"both","loft_options":[21.0,24.0,27.0,31.0,35.5,40.5,45.5],"release_year":2021,"gender":"Unisex","budget_tier":"premium","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","intermediate","senior","used-market"],"recommended_handicap_range":[14,36],"lightweight":false,"junior_suitable":false,"starter_set_suitable":true,"club_weight_category":"standard","commonly_paired_with":["TSi2 Driver","TSR2 Driver"]},{"brand":"Titleist","name":"T200 Irons (2023)","type":"Iron","forgiveness_level":"Moderate","swing_speed_range":[85,108],"shaft_flex_options":["Regular","Stiff","X-Stiff"],"shaft_material":"both","loft_options":[20.0,23.0,26.5,30.5,35.0,39.5,45.0],"release_year":2023,"gender":"Unisex","budget_tier":"premium","skill_level":"intermediate","player_type":["adult"],"target_audience":["intermediate","competitive","fitter"],"recommended_handicap_range":[5,15],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["TSR2 Driver","GT2 Driver"]},{"brand":"Titleist","name":"T100 Irons (2023)","type":"Iron","forgiveness_level":"Low","swing_speed_range":[95,115],"shaft_flex_options":["Regular","Stiff","X-Stiff"],"shaft_material":"steel","loft_options":[21.0,24.0,27.5,31.5,36.0,41.0,46.0],"release_year":2023,"gender":"Unisex","budget_tier":"premium","skill_level":"advanced","player_type":["adult"],"target_audience":["advanced","low-handicap","competitive","tour-level"],"recommended_handicap_range":[0,8],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"heavy","commonly_paired_with":["TSR3 Driver","GT3 Driver"]},{"brand":"Titleist","name":"T350 Irons (2023)","type":"Iron","forgiveness_level":"High","swing_speed_range":[72,95],"shaft_flex_options":["Senior","Regular"],"shaft_material":"graphite","loft_options":[22.0,25.0,28.5,33.0,37.5,42.5,48.0],"release_year":2023,"gender":"Unisex","budget_tier":"premium","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","senior","high-handicap","slow-swing"],"recommended_handicap_range":[18,54],"lightweight":true,"junior_suitable":false,"starter_set_suitable":true,"club_weight_category":"light","commonly_paired_with":["TSR2 Driver","GT2 Driver"]}],"Ping_Drivers":[{"brand":"Ping","name":"G425 Max","type":"Driver","forgiveness_level":"Very High","swing_speed_range":[78,105],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"graphite","loft_options":[9.0,10.5,12.0],"release_year":2021,"gender":"Unisex","budget_tier":"mid-range","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","intermediate","senior","high-handicap","used-market"],"recommended_handicap_range":[14,54],"lightweight":false,"junior_suitable":false,"starter_set_suitable":true,"club_weight_category":"standard","commonly_paired_with":["G425 Irons","G410 Irons"]},{"brand":"Ping","name":"G430 Max","type":"Driver","forgiveness_level":"Very High","swing_speed_range":[75,105],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"graphite","loft_options":[9.0,10.5,12.0],"release_year":2023,"gender":"Unisex","budget_tier":"premium","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","intermediate","senior","high-handicap"],"recommended_handicap_range":[14,54],"lightweight":false,"junior_suitable":false,"starter_set_suitable":true,"club_weight_category":"standard","commonly_paired_with":["G430 Irons","G425 Irons"]},{"brand":"Ping","name":"G440 Max","type":"Driver","forgiveness_level":"Very High","swing_speed_range":[75,105],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"graphite","loft_options":[9.0,10.5,12.0],"release_year":2025,"gender":"Unisex","budget_tier":"premium","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","intermediate","senior","high-handicap"],"recommended_handicap_range":[14,54],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["G440 Irons","G430 Irons"]},{"brand":"Ping","name":"G Le3","type":"Driver","forgiveness_level":"Very High","swing_speed_range":[60,85],"shaft_flex_options":["Senior","Ladies"],"shaft_material":"graphite","loft_options":[10.5,12.0,13.5],"release_year":2023,"gender":"Female","budget_tier":"premium","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","senior","high-handicap","slow-swing","female"],"recommended_handicap_range":[20,54],"lightweight":true,"junior_suitable":false,"starter_set_suitable":true,"club_weight_category":"light","commonly_paired_with":["G Le3 Irons"]}],"Ping_Irons":[{"brand":"Ping","name":"G425 Irons","type":"Iron","forgiveness_level":"Very High","swing_speed_range":[72,98],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"both","loft_options":[19.0,22.0,25.5,29.0,33.5,38.5,43.5],"release_year":2021,"gender":"Unisex","budget_tier":"mid-range","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","senior","high-handicap","used-market"],"recommended_handicap_range":[16,54],"lightweight":false,"junior_suitable":false,"starter_set_suitable":true,"club_weight_category":"standard","commonly_paired_with":["G425 Max Driver","G430 Max Driver"]},{"brand":"Ping","name":"G430 Irons","type":"Iron","forgiveness_level":"Very High","swing_speed_range":[72,98],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"both","loft_options":[19.0,22.0,25.5,29.0,33.5,38.5,43.5],"release_year":2023,"gender":"Unisex","budget_tier":"premium","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","senior","high-handicap"],"recommended_handicap_range":[16,54],"lightweight":false,"junior_suitable":false,"starter_set_suitable":true,"club_weight_category":"standard","commonly_paired_with":["G430 Max Driver","G440 Max Driver"]},{"brand":"Ping","name":"i230 Irons","type":"Iron","forgiveness_level":"Moderate","swing_speed_range":[85,110],"shaft_flex_options":["Regular","Stiff","X-Stiff"],"shaft_material":"both","loft_options":[21.0,24.0,27.5,31.5,36.0,41.0,46.0],"release_year":2022,"gender":"Unisex","budget_tier":"premium","skill_level":"intermediate","player_type":["adult"],"target_audience":["intermediate","competitive","fitter"],"recommended_handicap_range":[4,14],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["G430 LST Driver","G425 LST Driver"]},{"brand":"Ping","name":"G Le3 Irons","type":"Iron","forgiveness_level":"Very High","swing_speed_range":[55,82],"shaft_flex_options":["Senior","Ladies"],"shaft_material":"graphite","loft_options":[21.0,24.5,28.0,32.5,37.5,43.0,49.0],"release_year":2023,"gender":"Female","budget_tier":"premium","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","senior","high-handicap","slow-swing","female"],"recommended_handicap_range":[20,54],"lightweight":true,"junior_suitable":false,"starter_set_suitable":true,"club_weight_category":"light","commonly_paired_with":["G Le3 Driver"]}],"Cobra_Drivers":[{"brand":"Cobra","name":"F-Max","type":"Driver","forgiveness_level":"Very High","swing_speed_range":[60,90],"shaft_flex_options":["Senior","Regular"],"shaft_material":"graphite","loft_options":[10.5,11.5,13.0],"release_year":2018,"gender":"Unisex","budget_tier":"mid-range","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","senior","high-handicap","slow-swing","used-market"],"recommended_handicap_range":[22,54],"lightweight":true,"junior_suitable":false,"starter_set_suitable":true,"club_weight_category":"light","commonly_paired_with":["F-Max Irons","Air-X Irons"]},{"brand":"Cobra","name":"Air-X","type":"Driver","forgiveness_level":"Very High","swing_speed_range":[60,88],"shaft_flex_options":["Senior","Regular"],"shaft_material":"graphite","loft_options":[10.5,12.0],"release_year":2023,"gender":"Unisex","budget_tier":"mid-range","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","senior","high-handicap","slow-swing"],"recommended_handicap_range":[22,54],"lightweight":true,"junior_suitable":false,"starter_set_suitable":true,"club_weight_category":"light","commonly_paired_with":["Air-X Irons"]},{"brand":"Cobra","name":"Darkspeed Max","type":"Driver","forgiveness_level":"High","swing_speed_range":[80,100],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"graphite","loft_options":[9.0,10.5,12.0],"release_year":2024,"gender":"Unisex","budget_tier":"premium","skill_level":"intermediate","player_type":["adult","senior"],"target_audience":["intermediate","beginner","senior"],"recommended_handicap_range":[10,28],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["Darkspeed Irons","Air-X Irons"]},{"brand":"Cobra","name":"Darkspeed LS","type":"Driver","forgiveness_level":"Low","swing_speed_range":[95,115],"shaft_flex_options":["Stiff","X-Stiff"],"shaft_material":"graphite","loft_options":[9.0,10.5],"release_year":2024,"gender":"Unisex","budget_tier":"premium","skill_level":"advanced","player_type":["adult"],"target_audience":["advanced","low-handicap","competitive"],"recommended_handicap_range":[0,7],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["King Tour Irons","King Forged TEC Irons"]}],"Cobra_Irons":[{"brand":"Cobra","name":"Air-X Irons","type":"Iron","forgiveness_level":"Very High","swing_speed_range":[58,88],"shaft_flex_options":["Senior","Regular"],"shaft_material":"graphite","loft_options":[19.0,22.0,25.0,29.0,33.5,38.5,43.5],"release_year":2023,"gender":"Unisex","budget_tier":"mid-range","skill_level":"beginner","player_type":["adult","senior"],"target_audience":["beginner","senior","high-handicap","slow-swing"],"recommended_handicap_range":[24,54],"lightweight":true,"junior_suitable":false,"starter_set_suitable":true,"club_weight_category":"light","commonly_paired_with":["Air-X Driver","Darkspeed Max Driver"]},{"brand":"Cobra","name":"Darkspeed Irons","type":"Iron","forgiveness_level":"High","swing_speed_range":[78,100],"shaft_flex_options":["Senior","Regular","Stiff"],"shaft_material":"both","loft_options":[18.5,21.0,24.0,27.5,32.0,37.0,43.0],"release_year":2024,"gender":"Unisex","budget_tier":"premium","skill_level":"intermediate","player_type":["adult","senior"],"target_audience":["intermediate","beginner","senior"],"recommended_handicap_range":[12,28],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"standard","commonly_paired_with":["Darkspeed Max Driver","Air-X Driver"]},{"brand":"Cobra","name":"King Tour Irons","type":"Iron","forgiveness_level":"Low","swing_speed_range":[95,118],"shaft_flex_options":["Stiff","X-Stiff"],"shaft_material":"steel","loft_options":[21.0,24.0,28.0,32.0,36.5,41.5,47.0],"release_year":2023,"gender":"Unisex","budget_tier":"premium","skill_level":"advanced","player_type":["adult"],"target_audience":["advanced","low-handicap","competitive","tour-level"],"recommended_handicap_range":[0,6],"lightweight":false,"junior_suitable":false,"starter_set_suitable":false,"club_weight_category":"heavy","commonly_paired_with":["Darkspeed LS Driver"]}],"Junior_Sets":[{"brand":"Callaway","name":"XJ Junior Set (Ages 9-12)","type":"Junior Set","forgiveness_level":"Very High","swing_speed_range":[40,65],"shaft_flex_options":["Junior"],"shaft_material":"graphite","loft_options":[13.0,17.0,25.0,33.0,41.0],"release_year":2022,"gender":"Unisex","budget_tier":"mid-range","skill_level":"beginner","player_type":["junior"],"target_audience":["junior","beginner","parent-buyer"],"recommended_handicap_range":[36,54],"lightweight":true,"junior_suitable":true,"starter_set_suitable":true,"club_weight_category":"light","commonly_paired_with":[]},{"brand":"Ping","name":"Prodi G Junior Set","type":"Junior Set","forgiveness_level":"Very High","swing_speed_range":[45,75],"shaft_flex_options":["Junior"],"shaft_material":"graphite","loft_options":[14.0,19.0,27.0,35.0,43.0],"release_year":2021,"gender":"Unisex","budget_tier":"mid-range","skill_level":"beginner","player_type":["junior"],"target_audience":["junior","beginner","parent-buyer"],"recommended_handicap_range":[36,54],"lightweight":true,"junior_suitable":true,"starter_set_suitable":true,"club_weight_category":"light","commonly_paired_with":[]},{"brand":"TaylorMade","name":"Kalea Junior Set","type":"Junior Set","forgiveness_level":"Very High","swing_speed_range":[40,70],"shaft_flex_options":["Junior"],"shaft_material":"graphite","loft_options":[13.5,18.0,26.0,34.0,42.0],"release_year":2023,"gender":"Unisex","budget_tier":"mid-range","skill_level":"beginner","player_type":["junior"],"target_audience":["junior","beginner","parent-buyer"],"recommended_handicap_range":[36,54],"lightweight":true,"junior_suitable":true,"starter_set_suitable":true,"club_weight_category":"light","commonly_paired_with":[]},{"brand":"Cobra","name":"Fly-Z Junior Set","type":"Junior Set","forgiveness_level":"Very High","swing_speed_range":[40,65],"shaft_flex_options":["Junior"],"shaft_material":"graphite","loft_options":[13.0,18.0,26.0,34.0,42.0],"release_year":2019,"gender":"Unisex","budget_tier":"value","skill_level":"beginner","player_type":["junior"],"target_audience":["junior","beginner","parent-buyer","value-shopper"],"recommended_handicap_range":[36,54],"lightweight":true,"junior_suitable":true,"starter_set_suitable":true,"club_weight_category":"light","commonly_paired_with":[]}]};
+
+
+// ── API Key management ────────────────────────────────────────────────────────
+function initKeyBanner() {
+  const stored = sessionStorage.getItem('caddie_api_key');
+  const banner = document.getElementById('keyBanner');
+  if (stored && stored.startsWith('sk-')) {
+    banner.classList.add('hidden');
+  }
+}
+
+window.saveKey = function() {
+  const val = document.getElementById('keyInput').value.trim();
+  if (!val) return;
+  if (!val.startsWith('sk-')) {
+    showError('That doesn\'t look like a valid Anthropic key (should start with sk-)');
+    return;
+  }
+  sessionStorage.setItem('caddie_api_key', val);
+  document.getElementById('keyBanner').classList.add('hidden');
+  document.getElementById('keyInput').value = '';
+  // If chat hasn't launched yet, show a ready indicator
+  const input = document.getElementById('input');
+  if (!input.disabled) {
+    input.placeholder = 'API key saved — ask about clubs, specs, or recommendations…';
+    setTimeout(function() {
+      input.placeholder = 'Ask about clubs, specs, or recommendations…';
+    }, 2500);
+  }
+};
+
+// Initialise on load
+initKeyBanner();
+
+// ── State ────────────────────────────────────────────────────────────────────
+let profile = { playerType: null, skill: null, budget: null, prefs: [] };
+let currentStep = 1;
+const TOTAL_STEPS = 4;
+const history = [];
+
+const STEPS_META = [
+  { count:'Step 1 of 4', title:"Who's picking up the clubs?", hint:"Choose the option that best describes the golfer. This shapes every recommendation.", skippable: false },
+  { count:'Step 2 of 4', title:'How would you rate your game?', hint:"Pick the level that fits best. Not sure? Choose the last option and I'll help.", skippable: false },
+  { count:'Step 3 of 4', title:'What\'s your budget mindset?', hint:'This tells me which generations of clubs to focus on.', skippable: false },
+  { count:'Step 4 of 4', title:'Any specific needs? (Optional)', hint:'Select all that apply — these help me narrow down the perfect fit.', skippable: true }
+];
+
+const CHIPS = {
+  'junior':         ['Best junior set for ages 10-12','Junior clubs by age group','TaylorMade vs Ping junior sets','When should juniors upgrade?'],
+  'beginner-adult': ['Best forgiving driver for beginners','Easiest irons to hit','What loft should I use?','Best full starter set under $500'],
+  'recreational':   ['Best mid-range driver 2022+','TaylorMade vs Callaway irons','What shaft flex do I need?','Best clubs for weekend golfer'],
+  'competitive':    ['Low-spin driver options','Players irons comparison','Best driver for 100+ mph','Ping Blueprint vs TaylorMade P7CB'],
+  'senior':         ['Best senior flex drivers 2024','Lightweight irons for slow swing','Cobra Air-X vs TaylorMade Stealth HD','Best complete senior set']
+};
+
+const GREETINGS = {
+  'junior':         "Welcome! Buying clubs for a young golfer — great call.\n\nI have dedicated junior sets from TaylorMade, Callaway, Ping, and Cobra, fitted to age and swing development. Ask me anything: by age group, brand, or budget.",
+  'beginner-adult': "Welcome to the game! I'll keep things simple — no jargon, just honest guidance toward clubs that are forgiving and fun to play.\n\nI cover TaylorMade, Callaway, Titleist, Ping, and Cobra from 2010 to 2025. What would you like to explore?",
+  'recreational':   "Good to have you. I'll focus on clubs that genuinely improve your game without overcomplicating the decision.\n\nFive major brands covered, 15 years of releases. What's on your mind?",
+  'competitive':    "Let's get into it. I'll prioritise workability, low-spin options, and precision irons suited to your level.\n\nTaylorMade, Callaway, Titleist, Ping, and Cobra — full specs from 2010 to 2025. What are you looking for?",
+  'senior':         "Great to meet you. I'll focus on lightweight, senior-flex options engineered for maximum distance at moderate swing speeds.\n\nAll five major brands covered. Plenty of excellent choices — what would you like to know?"
+};
+
+// ── Onboarding logic ─────────────────────────────────────────────────────────
+window.selectCard = function(el) {
+  const group = el.dataset.group;
+  document.querySelectorAll('[data-group="' + group + '"]').forEach(function(b) {
+    b.classList.remove('selected');
+    b.setAttribute('aria-pressed','false');
+  });
+  el.classList.add('selected');
+  el.setAttribute('aria-pressed','true');
+  if (group === 'playerType') profile.playerType = el.dataset.val;
+  else if (group === 'skill')  profile.skill = el.dataset.val;
+  else if (group === 'budget') profile.budget = el.dataset.val;
+  updateNextBtn();
+};
+
+window.togglePref = function(el) {
+  const val = el.dataset.val;
+  const on = !el.classList.contains('selected');
+  el.classList.toggle('selected', on);
+  el.setAttribute('aria-pressed', String(on));
+  if (on) { if (!profile.prefs.includes(val)) profile.prefs.push(val); }
+  else     { profile.prefs = profile.prefs.filter(function(p) { return p !== val; }); }
+};
+
+function updateNextBtn() {
+  const btn = document.getElementById('obNext');
+  const map  = { 1: profile.playerType, 2: profile.skill, 3: profile.budget };
+  const ready = currentStep === 4 || !!map[currentStep];
+  btn.disabled = !ready;
+  btn.setAttribute('aria-disabled', String(!ready));
+}
+
+function updateStepUI() {
+  const meta = STEPS_META[currentStep - 1];
+  document.getElementById('obStepCount').textContent  = meta.count;
+  document.getElementById('obStepTitle').textContent  = meta.title;
+  document.getElementById('obStepHint').textContent   = meta.hint;
+  document.getElementById('obProgress').style.width   = (currentStep / TOTAL_STEPS * 100) + '%';
+  document.getElementById('obBack').style.display     = currentStep > 1 ? '' : 'none';
+  document.getElementById('obSkip').style.display     = meta.skippable ? '' : 'none';
+  // dot indicators
+  document.querySelectorAll('.ob-step-dot').forEach(function(d, i) {
+    d.classList.remove('active','done');
+    if (i + 1 === currentStep) d.classList.add('active');
+    else if (i + 1 < currentStep) d.classList.add('done');
+  });
+  // skip step 2 for juniors (no handicap concept)
+  if (currentStep === 2 && profile.playerType === 'junior') {
+    profile.skill = 'beginner';
+    goToStep(3);
+    return;
+  }
+  updateNextBtn();
+}
+
+function goToStep(n) {
+  const cur = document.getElementById('step' + currentStep);
+  cur.classList.remove('active');
+  cur.classList.add('exit-left');
+  setTimeout(function() { cur.classList.remove('exit-left'); }, 350);
+  currentStep = n;
+  const next = document.getElementById('step' + currentStep);
+  next.classList.add('active');
+  updateStepUI();
+}
+
+window.obNext = function() {
+  if (currentStep < TOTAL_STEPS) goToStep(currentStep + 1);
+  else launchChat();
+};
+
+window.obPrev = function() {
+  if (currentStep > 1) {
+    const skip2 = profile.playerType === 'junior';
+    goToStep(currentStep - 1 === 2 && skip2 ? 1 : currentStep - 1);
+  }
+};
+
+window.skipStep = function() {
+  if (currentStep === TOTAL_STEPS) launchChat();
+  else goToStep(currentStep + 1);
+};
+
+function buildProfileLabel() {
+  const typeMap = { 'junior':'Junior','beginner-adult':'Beginner','recreational':'Recreational','competitive':'Competitive','senior':'Senior' };
+  const budMap  = { 'value':'Value','mid-range':'Mid','premium':'Premium' };
+  const t = typeMap[profile.playerType] || '';
+  const b = budMap[profile.budget] || '';
+  return [t, b].filter(Boolean).join(' · ');
+}
+
+function buildSystem() {
+  const typeDesc = {
+    'junior':         'a parent or guardian buying clubs for a junior golfer (child/teenager)',
+    'beginner-adult': 'a brand-new adult golfer seeking high forgiveness and an easy learning curve',
+    'recreational':   'a casual recreational adult golfer playing a few times a month, mid-handicap range',
+    'competitive':    'a serious competitive golfer seeking workability, precision, and low-spin options',
+    'senior':         'a senior golfer prioritising lightweight, senior-flex clubs to maximise distance at moderate swing speeds'
+  };
+  const skillDesc = {
+    'beginner':'high handicap (28–54)',
+    'mid':     'mid handicap (12–27)',
+    'low':     'low handicap (5–11)',
+    'scratch': 'scratch or better (0–4)',
+    'unknown': 'unknown (I will ask questions to determine their level)',
+    'beginner':'beginner (junior level)'
+  };
+  const budDesc  = {
+    'value':     'value/budget — prefers older-gen or certified pre-owned clubs',
+    'mid-range': 'mid-range — happy with clubs 1–2 generations back',
+    'premium':   'premium — wants the latest 2024–2025 technology'
+  };
+  const prefStr = profile.prefs.length ? '\n- Specific preferences: ' + profile.prefs.join(', ') : '';
+  return 'You are Caddie AI, an expert golf equipment advisor covering TaylorMade, Callaway, Titleist, Ping, and Cobra.\n\n' +
+    'USER PROFILE:\n' +
+    '- Player type: ' + (typeDesc[profile.playerType] || 'general adult golfer') + '\n' +
+    '- Skill level: ' + (skillDesc[profile.skill] || 'unknown') + '\n' +
+    '- Budget: ' + (budDesc[profile.budget] || 'flexible') + prefStr + '\n\n' +
+    'Tailor ALL recommendations to this profile. Prioritise clubs whose target_audience, budget_tier, recommended_handicap_range, and player_type fields match this user.\n\n' +
+    'FULL CLUB DATABASE (JSON):\n' + JSON.stringify(CLUB_DATA, null, 2) + '\n\n' +
+    'GUIDELINES:\n' +
+    '- Talk like a knowledgeable caddie — friendly, direct, no unnecessary jargon.\n' +
+    '- Always name specific models with release years and key specs from the database.\n' +
+    '- If asked about swing speed but user did not provide it, estimate from skill level and ask to confirm.\n' +
+    '- If a brand not in the database is asked about, say: "I currently cover TaylorMade, Callaway, Titleist, Ping, and Cobra. Want me to compare options within those brands?"\n' +
+    '- If pricing or purchasing is asked about, say: "This is a test deployment — for pricing, please check a retailer directly."\n' +
+    '- For junior questions, always recommend age-appropriate sets and note shaft length considerations.\n' +
+    '- For female-fit preferences, recommend Ladies flex options and appropriate shaft lengths.\n' +
+    '- For slow-swing or senior profiles, always highlight lightweight and graphite-shaft options first.\n' +
+    '- Use commonly_paired_with data to suggest complete bag combinations.\n' +
+    '- Format responses with line breaks for readability. No markdown headers or asterisks.';
+}
+
+function launchChat() {
+  const overlay = document.getElementById('onboard');
+  overlay.classList.add('exit');
+  setTimeout(function() { overlay.classList.add('hidden'); }, 450);
+  // Build system prompt
+  window._SYSTEM = buildSystem();
+  // Profile pill
+  const lbl = buildProfileLabel();
+  if (lbl) {
+    document.getElementById('profileLabel').textContent = lbl;
+    document.getElementById('profilePill').style.display = '';
+  }
+  // Greeting
+  appendMessage('assistant', GREETINGS[profile.playerType] || GREETINGS['recreational']);
+  // Chips
+  buildChips();
+}
+
+window.reopenOnboard = function() {
+  const overlay = document.getElementById('onboard');
+  overlay.classList.remove('hidden', 'exit');
+};
+
+// ── Chat ─────────────────────────────────────────────────────────────────────
+const messagesEl  = document.getElementById('messages');
+const inputEl     = document.getElementById('input');
+const sendBtn     = document.getElementById('sendBtn');
+const errorBanner = document.getElementById('errorBanner');
+
+function scrollBottom() { messagesEl.scrollTop = messagesEl.scrollHeight; }
+
+function appendMessage(role, text) {
+  const msg = document.createElement('div');
+  msg.className = 'msg ' + role;
+  msg.innerHTML = '<div class="label">' + (role === 'user' ? 'You' : 'Caddie AI') + '</div>' +
+    '<div class="bubble">' + esc(text) + '</div>';
+  messagesEl.appendChild(msg);
+  scrollBottom();
+}
+
+function showTyping() {
+  const el = document.createElement('div');
+  el.className = 'msg assistant typing'; el.id = 'typing';
+  el.innerHTML = '<div class="label">Caddie AI</div>' +
+    '<div class="bubble" aria-hidden="true"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  messagesEl.appendChild(el); scrollBottom();
+}
+function removeTyping() { const el = document.getElementById('typing'); if (el) el.remove(); }
+
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function setLoading(on) {
+  sendBtn.disabled = on;
+  sendBtn.textContent = on ? '...' : 'Send';
+  sendBtn.setAttribute('aria-busy', String(on));
+}
+function showError(msg) {
+  errorBanner.textContent = msg;
+  errorBanner.classList.add('show');
+  setTimeout(function() { errorBanner.classList.remove('show'); }, 5000);
+}
+
+function buildChips() {
+  const el = document.getElementById('chips');
+  el.innerHTML = '';
+  (CHIPS[profile.playerType] || CHIPS['recreational']).forEach(function(text) {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.textContent = text;
+    btn.setAttribute('aria-label', 'Ask: ' + text);
+    btn.onclick = function() { inputEl.value = text; autoGrow(inputEl); inputEl.focus(); };
+    el.appendChild(btn);
+  });
+}
+
+window.autoGrow = function(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+};
+window.handleKey = function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+};
+
+window.sendMessage = async function() {
+  const text = inputEl.value.trim();
+  if (!text || sendBtn.disabled) return;
+  appendMessage('user', text);
+  history.push({ role:'user', content:text });
+  inputEl.value = ''; inputEl.style.height = 'auto';
+  setLoading(true); showTyping();
+  try {
+    const apiKey = sessionStorage.getItem('caddie_api_key') || '';
+    if (!apiKey) {
+      removeTyping();
+      showError('No API key set. Please enter your Anthropic API key in the banner above.');
+      setLoading(false);
+      document.getElementById('keyBanner').classList.remove('hidden');
+      return;
+    }
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2048,
+        system: window._SYSTEM || '',
+        messages: history
+      })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(function(){return{};});
+      if (res.status === 401) {
+        sessionStorage.removeItem('caddie_api_key');
+        document.getElementById('keyBanner').classList.remove('hidden');
+        throw new Error('Invalid or expired API key. Please enter a new one above.');
+      }
+      throw new Error((err&&err.error)?err.error.message:'HTTP '+res.status);
+    }
+    const data = await res.json();
+    const reply = data.content.map(function(b){return b.text||'';}).join('');
+    removeTyping();
+    appendMessage('assistant', reply);
+    history.push({ role:'assistant', content:reply });
+  } catch(err) {
+    removeTyping();
+    showError('Something went wrong: ' + err.message);
+  } finally { setLoading(false); }
+};
+</script>
+</body>
+</html>
