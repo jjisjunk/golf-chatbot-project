@@ -1,0 +1,2847 @@
+{
+  "_schema_version": "3.0",
+  "_field_guide": {
+    "Brand": "Manufacturer name (string)",
+    "Model": "Club model name (string)",
+    "Category": "Driver | Fairway Wood | Hybrid | Iron | Wedge | Putter | Junior Set",
+    "Loft": "Primary/standard loft in degrees (number)",
+    "Lie": "Standard lie angle in degrees (number)",
+    "Length": "Standard length in inches (number)",
+    "Stock_Shafts": "Array of stock shaft option strings",
+    "MSRP_Tier": "Value | Mid | Premium | Tour",
+    "brand": "Matches Brand \u2014 retained for backward compatibility",
+    "name": "Matches Model \u2014 retained for backward compatibility",
+    "type": "Matches Category \u2014 retained for backward compatibility",
+    "forgiveness_level": "Low | Moderate | High | Very High | Extremely High",
+    "swing_speed_range": "[min_mph, max_mph]",
+    "shaft_flex_options": "Array: Ladies | Senior | Regular | Stiff | X-Stiff | Junior",
+    "shaft_material": "steel | graphite | both",
+    "loft_options": "Array of all available lofts in degrees",
+    "release_year": "Year of commercial release",
+    "gender": "Unisex | Male | Female",
+    "budget_tier": "value | mid-range | premium | tour",
+    "skill_level": "beginner | intermediate | advanced",
+    "player_type": "Array: junior | adult | senior",
+    "target_audience": "Array of audience tags",
+    "recommended_handicap_range": "[min, max] \u2014 0 is scratch, 54 is max",
+    "lightweight": "true if notably lighter than standard",
+    "junior_suitable": "true if appropriate for junior golfers",
+    "starter_set_suitable": "true if appropriate as part of a beginner first set",
+    "club_weight_category": "light | standard | heavy",
+    "commonly_paired_with": "Array of complementary club names"
+  },
+  "TaylorMade_Drivers": [
+    {
+      "Brand": "TaylorMade",
+      "Model": "Qi35",
+      "Category": "Driver",
+      "Loft": 10.5,
+      "Lie": 58.0,
+      "Length": 45.75,
+      "Stock_Shafts": [
+        "Fujikura Speeder NX 50 (R)",
+        "Fujikura Speeder NX 55 (S)",
+        "Fujikura Speeder NX 65 (X)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "TaylorMade",
+      "name": "Qi35",
+      "type": "Driver",
+      "forgiveness_level": "Moderate",
+      "swing_speed_range": [
+        88,
+        108
+      ],
+      "shaft_flex_options": [
+        "Regular",
+        "Stiff",
+        "X-Stiff"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        9.0,
+        10.5,
+        12.0
+      ],
+      "release_year": 2025,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "intermediate",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "intermediate",
+        "competitive"
+      ],
+      "recommended_handicap_range": [
+        6,
+        18
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "TaylorMade P770 Irons (2023)",
+        "TaylorMade Qi Irons"
+      ]
+    },
+    {
+      "Brand": "TaylorMade",
+      "Model": "Qi35 Max",
+      "Category": "Driver",
+      "Loft": 10.5,
+      "Lie": 58.0,
+      "Length": 45.75,
+      "Stock_Shafts": [
+        "Fujikura Speeder NX 40 (Sr)",
+        "Fujikura Speeder NX 50 (R)",
+        "Fujikura Speeder NX 55 (S)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "TaylorMade",
+      "name": "Qi35 Max",
+      "type": "Driver",
+      "forgiveness_level": "Very High",
+      "swing_speed_range": [
+        75,
+        100
+      ],
+      "shaft_flex_options": [
+        "Senior",
+        "Regular",
+        "Stiff"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        9.0,
+        10.5,
+        12.0
+      ],
+      "release_year": 2025,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "beginner",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "beginner",
+        "senior",
+        "high-handicap"
+      ],
+      "recommended_handicap_range": [
+        18,
+        54
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "TaylorMade Qi Irons",
+        "TaylorMade Stealth HD Irons"
+      ]
+    },
+    {
+      "Brand": "TaylorMade",
+      "Model": "Qi35 LS",
+      "Category": "Driver",
+      "Loft": 9.0,
+      "Lie": 58.0,
+      "Length": 45.75,
+      "Stock_Shafts": [
+        "Fujikura Speeder NX 55 (S)",
+        "Fujikura Speeder NX 65 (X)",
+        "Mitsubishi Tensei AV White 65 (X)"
+      ],
+      "MSRP_Tier": "Tour",
+      "brand": "TaylorMade",
+      "name": "Qi35 LS",
+      "type": "Driver",
+      "forgiveness_level": "Low",
+      "swing_speed_range": [
+        95,
+        118
+      ],
+      "shaft_flex_options": [
+        "Stiff",
+        "X-Stiff"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        8.0,
+        9.0,
+        10.5
+      ],
+      "release_year": 2025,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "advanced",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "advanced",
+        "low-handicap",
+        "competitive"
+      ],
+      "recommended_handicap_range": [
+        0,
+        6
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "TaylorMade P7CB Irons",
+        "TaylorMade P770 Irons (2023)"
+      ]
+    },
+    {
+      "Brand": "TaylorMade",
+      "Model": "Qi10",
+      "Category": "Driver",
+      "Loft": 10.5,
+      "Lie": 58.0,
+      "Length": 45.75,
+      "Stock_Shafts": [
+        "Fujikura Speeder NX 40 (Sr)",
+        "Fujikura Speeder NX 50 (R)",
+        "Fujikura Speeder NX 55 (S)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "TaylorMade",
+      "name": "Qi10",
+      "type": "Driver",
+      "forgiveness_level": "High",
+      "swing_speed_range": [
+        85,
+        108
+      ],
+      "shaft_flex_options": [
+        "Senior",
+        "Regular",
+        "Stiff"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        9.0,
+        10.5,
+        12.0
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "intermediate",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "intermediate",
+        "beginner",
+        "senior"
+      ],
+      "recommended_handicap_range": [
+        8,
+        24
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "TaylorMade Qi Irons",
+        "TaylorMade Stealth HD Irons"
+      ]
+    },
+    {
+      "Brand": "TaylorMade",
+      "Model": "Burner SuperFast 2.0",
+      "Category": "Driver",
+      "Loft": 10.5,
+      "Lie": 58.0,
+      "Length": 46.0,
+      "Stock_Shafts": [
+        "TaylorMade Superfast 50 (Sr)",
+        "TaylorMade Superfast 55 (R)",
+        "TaylorMade Superfast 60 (S)"
+      ],
+      "MSRP_Tier": "Value",
+      "brand": "TaylorMade",
+      "name": "Burner SuperFast 2.0",
+      "type": "Driver",
+      "forgiveness_level": "High",
+      "swing_speed_range": [
+        75,
+        100
+      ],
+      "shaft_flex_options": [
+        "Senior",
+        "Regular",
+        "Stiff"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        9.5,
+        10.5,
+        13.0
+      ],
+      "release_year": 2011,
+      "gender": "Unisex",
+      "budget_tier": "value",
+      "skill_level": "beginner",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "beginner",
+        "senior",
+        "high-handicap",
+        "value-shopper",
+        "used-market"
+      ],
+      "recommended_handicap_range": [
+        18,
+        54
+      ],
+      "lightweight": true,
+      "junior_suitable": false,
+      "starter_set_suitable": true,
+      "club_weight_category": "light",
+      "commonly_paired_with": [
+        "TaylorMade Burner 2.0 Irons",
+        "TaylorMade RocketBallz Irons"
+      ]
+    }
+  ],
+  "TaylorMade_Irons": [
+    {
+      "Brand": "TaylorMade",
+      "Model": "Qi Irons",
+      "Category": "Iron",
+      "Loft": 28.0,
+      "Lie": 62.5,
+      "Length": 37.5,
+      "Stock_Shafts": [
+        "True Temper Elevate 95 (R)",
+        "True Temper Elevate 95 (S)",
+        "Fujikura MCI 80 graphite (R)",
+        "Fujikura MCI 80 graphite (S)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "TaylorMade",
+      "name": "Qi Irons",
+      "type": "Iron",
+      "forgiveness_level": "High",
+      "swing_speed_range": [
+        72,
+        100
+      ],
+      "shaft_flex_options": [
+        "Senior",
+        "Regular",
+        "Stiff"
+      ],
+      "shaft_material": "both",
+      "loft_options": [
+        18.5,
+        21.0,
+        24.0,
+        28.0,
+        32.0,
+        37.0,
+        43.0
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "beginner",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "beginner",
+        "senior",
+        "high-handicap"
+      ],
+      "recommended_handicap_range": [
+        16,
+        54
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "TaylorMade Qi10 Driver",
+        "TaylorMade Qi10 Max Driver"
+      ]
+    },
+    {
+      "Brand": "TaylorMade",
+      "Model": "P770 (2023)",
+      "Category": "Iron",
+      "Loft": 29.5,
+      "Lie": 62.5,
+      "Length": 37.5,
+      "Stock_Shafts": [
+        "True Temper Dynamic Gold 105 (R300)",
+        "True Temper Dynamic Gold 105 (S300)",
+        "True Temper Dynamic Gold 105 (X100)",
+        "KBS Tour 90 (R)",
+        "KBS Tour 90 (S)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "TaylorMade",
+      "name": "P770 Irons (2023)",
+      "type": "Iron",
+      "forgiveness_level": "Moderate",
+      "swing_speed_range": [
+        88,
+        112
+      ],
+      "shaft_flex_options": [
+        "Regular",
+        "Stiff",
+        "X-Stiff"
+      ],
+      "shaft_material": "both",
+      "loft_options": [
+        22.5,
+        25.5,
+        29.5,
+        33.5,
+        38.0,
+        43.0,
+        49.0
+      ],
+      "release_year": 2023,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "intermediate",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "intermediate",
+        "competitive",
+        "fitter"
+      ],
+      "recommended_handicap_range": [
+        4,
+        14
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "TaylorMade Qi35 Driver",
+        "TaylorMade Qi35 LS Driver"
+      ]
+    },
+    {
+      "Brand": "TaylorMade",
+      "Model": "P7CB",
+      "Category": "Iron",
+      "Loft": 28.0,
+      "Lie": 63.0,
+      "Length": 37.5,
+      "Stock_Shafts": [
+        "True Temper Dynamic Gold S300",
+        "True Temper Dynamic Gold X100",
+        "KBS Tour (S)",
+        "KBS Tour-V (S)"
+      ],
+      "MSRP_Tier": "Tour",
+      "brand": "TaylorMade",
+      "name": "P7CB Irons",
+      "type": "Iron",
+      "forgiveness_level": "Low",
+      "swing_speed_range": [
+        95,
+        118
+      ],
+      "shaft_flex_options": [
+        "Stiff",
+        "X-Stiff"
+      ],
+      "shaft_material": "steel",
+      "loft_options": [
+        21.0,
+        24.0,
+        28.0,
+        32.0,
+        36.0,
+        41.0,
+        47.0
+      ],
+      "release_year": 2025,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "advanced",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "advanced",
+        "low-handicap",
+        "competitive",
+        "tour-level"
+      ],
+      "recommended_handicap_range": [
+        0,
+        6
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "heavy",
+      "commonly_paired_with": [
+        "TaylorMade Qi35 LS Driver",
+        "TaylorMade Qi10 LS Driver"
+      ]
+    },
+    {
+      "Brand": "TaylorMade",
+      "Model": "Stealth HD Irons",
+      "Category": "Iron",
+      "Loft": 27.0,
+      "Lie": 62.0,
+      "Length": 37.75,
+      "Stock_Shafts": [
+        "Fujikura Speeder NX Iron 55 graphite (Sr)",
+        "Fujikura Speeder NX Iron 60 graphite (R)",
+        "True Temper Elevate 95 steel (R)"
+      ],
+      "MSRP_Tier": "Mid",
+      "brand": "TaylorMade",
+      "name": "Stealth HD Irons",
+      "type": "Iron",
+      "forgiveness_level": "High",
+      "swing_speed_range": [
+        65,
+        90
+      ],
+      "shaft_flex_options": [
+        "Senior",
+        "Regular"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        20.0,
+        23.5,
+        27.0,
+        31.5,
+        36.5,
+        42.0,
+        48.0
+      ],
+      "release_year": 2023,
+      "gender": "Unisex",
+      "budget_tier": "mid-range",
+      "skill_level": "beginner",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "beginner",
+        "senior",
+        "high-handicap",
+        "slow-swing"
+      ],
+      "recommended_handicap_range": [
+        20,
+        54
+      ],
+      "lightweight": true,
+      "junior_suitable": false,
+      "starter_set_suitable": true,
+      "club_weight_category": "light",
+      "commonly_paired_with": [
+        "TaylorMade Qi10 Max Driver",
+        "TaylorMade Qi35 Max Driver"
+      ]
+    }
+  ],
+  "Callaway_Drivers": [
+    {
+      "Brand": "Callaway",
+      "Model": "Elyte",
+      "Category": "Driver",
+      "Loft": 10.5,
+      "Lie": 58.5,
+      "Length": 45.5,
+      "Stock_Shafts": [
+        "Project X Cypher 40 (Sr)",
+        "Project X Cypher 50 (R)",
+        "Project X Cypher 55 (S)",
+        "Project X HZRDUS Black 60 (X)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "Callaway",
+      "name": "Elyte",
+      "type": "Driver",
+      "forgiveness_level": "High",
+      "swing_speed_range": [
+        80,
+        105
+      ],
+      "shaft_flex_options": [
+        "Senior",
+        "Regular",
+        "Stiff",
+        "X-Stiff"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        9.0,
+        10.5,
+        12.0
+      ],
+      "release_year": 2025,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "intermediate",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "beginner",
+        "intermediate",
+        "senior"
+      ],
+      "recommended_handicap_range": [
+        10,
+        28
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Callaway Elyte Irons",
+        "Callaway Paradym Ai Smoke Irons"
+      ]
+    },
+    {
+      "Brand": "Callaway",
+      "Model": "Paradym Ai Smoke Max",
+      "Category": "Driver",
+      "Loft": 10.5,
+      "Lie": 58.5,
+      "Length": 45.5,
+      "Stock_Shafts": [
+        "Project X Cypher 40 (Sr)",
+        "Project X Cypher 50 (R)",
+        "Project X Cypher 55 (S)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "Callaway",
+      "name": "Paradym Ai Smoke Max",
+      "type": "Driver",
+      "forgiveness_level": "High",
+      "swing_speed_range": [
+        80,
+        102
+      ],
+      "shaft_flex_options": [
+        "Senior",
+        "Regular",
+        "Stiff"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        9.0,
+        10.5,
+        12.0
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "beginner",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "beginner",
+        "intermediate",
+        "senior"
+      ],
+      "recommended_handicap_range": [
+        12,
+        32
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Callaway Paradym Ai Smoke Irons",
+        "Callaway Rogue ST Max Irons"
+      ]
+    },
+    {
+      "Brand": "Callaway",
+      "Model": "Rogue ST Max",
+      "Category": "Driver",
+      "Loft": 10.5,
+      "Lie": 58.5,
+      "Length": 45.5,
+      "Stock_Shafts": [
+        "Project X Cypher 40 (Sr)",
+        "Project X Cypher 50 (R)",
+        "Project X Cypher 55 (S)",
+        "Project X HZRDUS Smoke Black 60 (S)"
+      ],
+      "MSRP_Tier": "Mid",
+      "brand": "Callaway",
+      "name": "Rogue ST Max",
+      "type": "Driver",
+      "forgiveness_level": "High",
+      "swing_speed_range": [
+        80,
+        102
+      ],
+      "shaft_flex_options": [
+        "Senior",
+        "Regular",
+        "Stiff"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        9.0,
+        10.5,
+        12.0
+      ],
+      "release_year": 2022,
+      "gender": "Unisex",
+      "budget_tier": "mid-range",
+      "skill_level": "intermediate",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "intermediate",
+        "beginner",
+        "senior",
+        "used-market"
+      ],
+      "recommended_handicap_range": [
+        10,
+        28
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Callaway Rogue ST Max Irons",
+        "Callaway Mavrik Irons"
+      ]
+    }
+  ],
+  "Callaway_Irons": [
+    {
+      "Brand": "Callaway",
+      "Model": "Apex Pro 24",
+      "Category": "Iron",
+      "Loft": 27.0,
+      "Lie": 62.5,
+      "Length": 37.5,
+      "Stock_Shafts": [
+        "True Temper Dynamic Gold 105 (R300)",
+        "True Temper Dynamic Gold 105 (S300)",
+        "True Temper Dynamic Gold 105 (X100)",
+        "Project X LZ 5.5",
+        "Project X LZ 6.0"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "Callaway",
+      "name": "Apex Pro 24 Irons",
+      "type": "Iron",
+      "forgiveness_level": "Low",
+      "swing_speed_range": [
+        92,
+        115
+      ],
+      "shaft_flex_options": [
+        "Regular",
+        "Stiff",
+        "X-Stiff"
+      ],
+      "shaft_material": "steel",
+      "loft_options": [
+        20.0,
+        23.0,
+        26.0,
+        29.5,
+        33.5,
+        38.0,
+        43.0,
+        48.0
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "advanced",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "advanced",
+        "low-handicap",
+        "competitive",
+        "fitter"
+      ],
+      "recommended_handicap_range": [
+        0,
+        8
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "heavy",
+      "commonly_paired_with": [
+        "Callaway Elyte Driver",
+        "Callaway Paradym Ai Smoke Driver"
+      ]
+    },
+    {
+      "Brand": "Callaway",
+      "Model": "Paradym Ai Smoke Irons",
+      "Category": "Iron",
+      "Loft": 25.0,
+      "Lie": 62.0,
+      "Length": 37.75,
+      "Stock_Shafts": [
+        "True Temper Elevate 95 (R)",
+        "True Temper Elevate 95 (S)",
+        "Project X Cypher graphite 65 (R)",
+        "Project X Cypher graphite 65 (S)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "Callaway",
+      "name": "Paradym Ai Smoke Irons",
+      "type": "Iron",
+      "forgiveness_level": "High",
+      "swing_speed_range": [
+        78,
+        102
+      ],
+      "shaft_flex_options": [
+        "Senior",
+        "Regular",
+        "Stiff"
+      ],
+      "shaft_material": "both",
+      "loft_options": [
+        19.0,
+        22.0,
+        25.0,
+        28.5,
+        33.0,
+        38.0,
+        43.0
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "beginner",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "beginner",
+        "intermediate",
+        "senior"
+      ],
+      "recommended_handicap_range": [
+        12,
+        36
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Callaway Paradym Ai Smoke Max Driver",
+        "Callaway Elyte Driver"
+      ]
+    },
+    {
+      "Brand": "Callaway",
+      "Model": "Apex 24 Irons",
+      "Category": "Iron",
+      "Loft": 27.0,
+      "Lie": 62.5,
+      "Length": 37.5,
+      "Stock_Shafts": [
+        "True Temper Elevate 95 (R)",
+        "True Temper Elevate 95 (S)",
+        "True Temper Dynamic Gold 105 (S300)",
+        "Project X LZ 5.5",
+        "Project X LZ 6.0"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "Callaway",
+      "name": "Apex 24 Irons",
+      "type": "Iron",
+      "forgiveness_level": "Moderate",
+      "swing_speed_range": [
+        85,
+        110
+      ],
+      "shaft_flex_options": [
+        "Regular",
+        "Stiff",
+        "X-Stiff"
+      ],
+      "shaft_material": "both",
+      "loft_options": [
+        20.0,
+        23.0,
+        26.5,
+        30.5,
+        35.0,
+        39.5,
+        44.5
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "intermediate",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "intermediate",
+        "competitive",
+        "fitter"
+      ],
+      "recommended_handicap_range": [
+        5,
+        16
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Callaway Elyte Driver",
+        "Callaway Paradym Ai Smoke Max Driver"
+      ]
+    }
+  ],
+  "Titleist_Drivers": [
+    {
+      "Brand": "Titleist",
+      "Model": "GT2",
+      "Category": "Driver",
+      "Loft": 10.0,
+      "Lie": 58.0,
+      "Length": 45.5,
+      "Stock_Shafts": [
+        "Mitsubishi Tensei AV White 55 (R)",
+        "Mitsubishi Tensei AV White 55 (S)",
+        "Mitsubishi Tensei AV White 65 (X)",
+        "HZRDUS Red CB 60 (S)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "Titleist",
+      "name": "GT2",
+      "type": "Driver",
+      "forgiveness_level": "Moderate",
+      "swing_speed_range": [
+        85,
+        110
+      ],
+      "shaft_flex_options": [
+        "Regular",
+        "Stiff",
+        "X-Stiff"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        8.0,
+        9.0,
+        10.0,
+        11.0
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "intermediate",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "intermediate",
+        "competitive"
+      ],
+      "recommended_handicap_range": [
+        5,
+        16
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Titleist T200 Irons (2023)",
+        "Titleist T300 Irons (2021)"
+      ]
+    },
+    {
+      "Brand": "Titleist",
+      "Model": "GT3",
+      "Category": "Driver",
+      "Loft": 9.0,
+      "Lie": 58.0,
+      "Length": 45.5,
+      "Stock_Shafts": [
+        "HZRDUS Red CB 60 (S)",
+        "HZRDUS Red CB 60 (X)",
+        "Mitsubishi Tensei AV White 65 (X)"
+      ],
+      "MSRP_Tier": "Tour",
+      "brand": "Titleist",
+      "name": "GT3",
+      "type": "Driver",
+      "forgiveness_level": "Low",
+      "swing_speed_range": [
+        95,
+        120
+      ],
+      "shaft_flex_options": [
+        "Stiff",
+        "X-Stiff"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        8.0,
+        9.0,
+        10.0
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "advanced",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "advanced",
+        "low-handicap",
+        "competitive",
+        "tour-level"
+      ],
+      "recommended_handicap_range": [
+        0,
+        5
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Titleist T100 Irons (2023)",
+        "Titleist T100S Irons"
+      ]
+    }
+  ],
+  "Titleist_Irons": [
+    {
+      "Brand": "Titleist",
+      "Model": "T100 (2023)",
+      "Category": "Iron",
+      "Loft": 27.5,
+      "Lie": 62.5,
+      "Length": 37.5,
+      "Stock_Shafts": [
+        "True Temper Dynamic Gold S300",
+        "True Temper Dynamic Gold X100",
+        "True Temper AMT Tour White S300",
+        "KBS Tour (S)",
+        "KBS Tour-V (S)"
+      ],
+      "MSRP_Tier": "Tour",
+      "brand": "Titleist",
+      "name": "T100 Irons (2023)",
+      "type": "Iron",
+      "forgiveness_level": "Low",
+      "swing_speed_range": [
+        95,
+        118
+      ],
+      "shaft_flex_options": [
+        "Regular",
+        "Stiff",
+        "X-Stiff"
+      ],
+      "shaft_material": "steel",
+      "loft_options": [
+        21.0,
+        24.0,
+        27.5,
+        31.5,
+        36.0,
+        41.0,
+        46.0
+      ],
+      "release_year": 2023,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "advanced",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "advanced",
+        "low-handicap",
+        "competitive",
+        "tour-level"
+      ],
+      "recommended_handicap_range": [
+        0,
+        8
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "heavy",
+      "commonly_paired_with": [
+        "Titleist TSR3 Driver",
+        "Titleist GT3 Driver"
+      ]
+    },
+    {
+      "Brand": "Titleist",
+      "Model": "T200 (2023)",
+      "Category": "Iron",
+      "Loft": 26.5,
+      "Lie": 62.5,
+      "Length": 37.5,
+      "Stock_Shafts": [
+        "True Temper AMT Tour White S300",
+        "True Temper Dynamic Gold S300",
+        "KBS Tour 90 (S)",
+        "True Temper Elevate 95 (R)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "Titleist",
+      "name": "T200 Irons (2023)",
+      "type": "Iron",
+      "forgiveness_level": "Moderate",
+      "swing_speed_range": [
+        85,
+        110
+      ],
+      "shaft_flex_options": [
+        "Regular",
+        "Stiff",
+        "X-Stiff"
+      ],
+      "shaft_material": "both",
+      "loft_options": [
+        20.0,
+        23.0,
+        26.5,
+        30.5,
+        35.0,
+        39.5,
+        45.0
+      ],
+      "release_year": 2023,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "intermediate",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "intermediate",
+        "competitive",
+        "fitter"
+      ],
+      "recommended_handicap_range": [
+        5,
+        15
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Titleist TSR2 Driver",
+        "Titleist GT2 Driver"
+      ]
+    },
+    {
+      "Brand": "Titleist",
+      "Model": "T300 (2021)",
+      "Category": "Iron",
+      "Loft": 27.0,
+      "Lie": 62.5,
+      "Length": 37.75,
+      "Stock_Shafts": [
+        "True Temper Elevate 95 (R)",
+        "True Temper Elevate 95 (S)",
+        "Mitsubishi MMT graphite 55 (R)",
+        "Mitsubishi MMT graphite 60 (S)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "Titleist",
+      "name": "T300 Irons (2021)",
+      "type": "Iron",
+      "forgiveness_level": "High",
+      "swing_speed_range": [
+        78,
+        102
+      ],
+      "shaft_flex_options": [
+        "Regular",
+        "Stiff"
+      ],
+      "shaft_material": "both",
+      "loft_options": [
+        21.0,
+        24.0,
+        27.0,
+        31.0,
+        35.5,
+        40.5,
+        45.5
+      ],
+      "release_year": 2021,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "beginner",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "beginner",
+        "intermediate",
+        "senior",
+        "used-market"
+      ],
+      "recommended_handicap_range": [
+        14,
+        36
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": true,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Titleist TSi2 Driver",
+        "Titleist TSR2 Driver"
+      ]
+    },
+    {
+      "Brand": "Titleist",
+      "Model": "T350 (2023)",
+      "Category": "Iron",
+      "Loft": 28.5,
+      "Lie": 62.0,
+      "Length": 37.75,
+      "Stock_Shafts": [
+        "True Temper Elevate 95 (Sr)",
+        "True Temper Elevate 95 (R)",
+        "Mitsubishi MMT graphite 55 (Sr)",
+        "Mitsubishi MMT graphite 55 (R)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "Titleist",
+      "name": "T350 Irons (2023)",
+      "type": "Iron",
+      "forgiveness_level": "High",
+      "swing_speed_range": [
+        72,
+        95
+      ],
+      "shaft_flex_options": [
+        "Senior",
+        "Regular"
+      ],
+      "shaft_material": "both",
+      "loft_options": [
+        22.0,
+        25.0,
+        28.5,
+        33.0,
+        37.5,
+        42.5,
+        48.0
+      ],
+      "release_year": 2023,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "beginner",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "beginner",
+        "senior",
+        "high-handicap",
+        "slow-swing"
+      ],
+      "recommended_handicap_range": [
+        18,
+        54
+      ],
+      "lightweight": true,
+      "junior_suitable": false,
+      "starter_set_suitable": true,
+      "club_weight_category": "light",
+      "commonly_paired_with": [
+        "Titleist TSR2 Driver",
+        "Titleist GT2 Driver"
+      ]
+    }
+  ],
+  "Ping_Drivers": [
+    {
+      "Brand": "Ping",
+      "Model": "G440 Max",
+      "Category": "Driver",
+      "Loft": 10.5,
+      "Lie": 58.0,
+      "Length": 45.75,
+      "Stock_Shafts": [
+        "PING Alta CB 55 Black (Sr)",
+        "PING Alta CB 55 Black (R)",
+        "PING Alta CB 65 Black (S)",
+        "PING Alta CB 75 Black (X)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "Ping",
+      "name": "G440 Max",
+      "type": "Driver",
+      "forgiveness_level": "Very High",
+      "swing_speed_range": [
+        75,
+        105
+      ],
+      "shaft_flex_options": [
+        "Senior",
+        "Regular",
+        "Stiff",
+        "X-Stiff"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        9.0,
+        10.5,
+        12.0
+      ],
+      "release_year": 2025,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "beginner",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "beginner",
+        "intermediate",
+        "senior",
+        "high-handicap"
+      ],
+      "recommended_handicap_range": [
+        14,
+        54
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Ping G440 Irons",
+        "Ping G430 Irons"
+      ]
+    },
+    {
+      "Brand": "Ping",
+      "Model": "G430 Max",
+      "Category": "Driver",
+      "Loft": 10.5,
+      "Lie": 58.0,
+      "Length": 45.75,
+      "Stock_Shafts": [
+        "PING Alta CB 55 Black (Sr)",
+        "PING Alta CB 55 Black (R)",
+        "PING Alta CB 65 Black (S)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "Ping",
+      "name": "G430 Max",
+      "type": "Driver",
+      "forgiveness_level": "Very High",
+      "swing_speed_range": [
+        75,
+        105
+      ],
+      "shaft_flex_options": [
+        "Senior",
+        "Regular",
+        "Stiff"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        9.0,
+        10.5,
+        12.0
+      ],
+      "release_year": 2023,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "beginner",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "beginner",
+        "intermediate",
+        "senior",
+        "high-handicap"
+      ],
+      "recommended_handicap_range": [
+        14,
+        54
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": true,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Ping G430 Irons",
+        "Ping G425 Irons"
+      ]
+    }
+  ],
+  "Ping_Irons": [
+    {
+      "Brand": "Ping",
+      "Model": "G430 Irons",
+      "Category": "Iron",
+      "Loft": 25.5,
+      "Lie": 62.5,
+      "Length": 37.75,
+      "Stock_Shafts": [
+        "True Temper Elevate 95 (R)",
+        "True Temper Elevate 95 (S)",
+        "Nippon NS Pro 950 (R)",
+        "PING Alta CB graphite 65 (Sr)",
+        "PING Alta CB graphite 65 (R)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "Ping",
+      "name": "G430 Irons",
+      "type": "Iron",
+      "forgiveness_level": "Very High",
+      "swing_speed_range": [
+        72,
+        100
+      ],
+      "shaft_flex_options": [
+        "Senior",
+        "Regular",
+        "Stiff"
+      ],
+      "shaft_material": "both",
+      "loft_options": [
+        19.0,
+        22.0,
+        25.5,
+        29.0,
+        33.5,
+        38.5,
+        43.5
+      ],
+      "release_year": 2023,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "beginner",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "beginner",
+        "senior",
+        "high-handicap"
+      ],
+      "recommended_handicap_range": [
+        16,
+        54
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": true,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Ping G430 Max Driver",
+        "Ping G440 Max Driver"
+      ]
+    },
+    {
+      "Brand": "Ping",
+      "Model": "i230 Irons",
+      "Category": "Iron",
+      "Loft": 27.5,
+      "Lie": 63.0,
+      "Length": 37.5,
+      "Stock_Shafts": [
+        "True Temper Dynamic Gold S300",
+        "True Temper Dynamic Gold 105 (S300)",
+        "KBS Tour 90 (S)",
+        "Nippon NS Pro 950 GH (S)",
+        "PING Alta CB graphite 65 (R)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "Ping",
+      "name": "i230 Irons",
+      "type": "Iron",
+      "forgiveness_level": "Moderate",
+      "swing_speed_range": [
+        85,
+        112
+      ],
+      "shaft_flex_options": [
+        "Regular",
+        "Stiff",
+        "X-Stiff"
+      ],
+      "shaft_material": "both",
+      "loft_options": [
+        21.0,
+        24.0,
+        27.5,
+        31.5,
+        36.0,
+        41.0,
+        46.0
+      ],
+      "release_year": 2022,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "intermediate",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "intermediate",
+        "competitive",
+        "fitter"
+      ],
+      "recommended_handicap_range": [
+        4,
+        14
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Ping G430 LST Driver",
+        "Ping G440 Max Driver"
+      ]
+    }
+  ],
+  "Cobra_Drivers": [
+    {
+      "Brand": "Cobra",
+      "Model": "Darkspeed Max",
+      "Category": "Driver",
+      "Loft": 10.5,
+      "Lie": 58.5,
+      "Length": 45.5,
+      "Stock_Shafts": [
+        "Fujikura Ventus TR Blue 5 (R)",
+        "Fujikura Ventus TR Blue 5 (S)",
+        "Fujikura Ventus TR Blue 6 (X)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "Cobra",
+      "name": "Darkspeed Max",
+      "type": "Driver",
+      "forgiveness_level": "High",
+      "swing_speed_range": [
+        80,
+        102
+      ],
+      "shaft_flex_options": [
+        "Senior",
+        "Regular",
+        "Stiff"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        9.0,
+        10.5,
+        12.0
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "intermediate",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "intermediate",
+        "beginner",
+        "senior"
+      ],
+      "recommended_handicap_range": [
+        10,
+        28
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Cobra Darkspeed Irons",
+        "Cobra Air-X Irons"
+      ]
+    },
+    {
+      "Brand": "Cobra",
+      "Model": "Air-X Driver",
+      "Category": "Driver",
+      "Loft": 10.5,
+      "Lie": 58.5,
+      "Length": 45.75,
+      "Stock_Shafts": [
+        "Fujikura Ventus TR Blue 4 (Sr)",
+        "Fujikura Ventus TR Blue 5 (R)"
+      ],
+      "MSRP_Tier": "Mid",
+      "brand": "Cobra",
+      "name": "Air-X Driver",
+      "type": "Driver",
+      "forgiveness_level": "Very High",
+      "swing_speed_range": [
+        60,
+        88
+      ],
+      "shaft_flex_options": [
+        "Senior",
+        "Regular"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        10.5,
+        12.0
+      ],
+      "release_year": 2023,
+      "gender": "Unisex",
+      "budget_tier": "mid-range",
+      "skill_level": "beginner",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "beginner",
+        "senior",
+        "high-handicap",
+        "slow-swing"
+      ],
+      "recommended_handicap_range": [
+        22,
+        54
+      ],
+      "lightweight": true,
+      "junior_suitable": false,
+      "starter_set_suitable": true,
+      "club_weight_category": "light",
+      "commonly_paired_with": [
+        "Cobra Air-X Irons"
+      ]
+    }
+  ],
+  "Cobra_Irons": [
+    {
+      "Brand": "Cobra",
+      "Model": "Darkspeed Irons",
+      "Category": "Iron",
+      "Loft": 24.0,
+      "Lie": 62.0,
+      "Length": 37.75,
+      "Stock_Shafts": [
+        "True Temper Elevate 95 (R)",
+        "True Temper Elevate 95 (S)",
+        "Fujikura Ventus Iron graphite 65 (R)",
+        "Fujikura Ventus Iron graphite 65 (S)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "Cobra",
+      "name": "Darkspeed Irons",
+      "type": "Iron",
+      "forgiveness_level": "High",
+      "swing_speed_range": [
+        78,
+        102
+      ],
+      "shaft_flex_options": [
+        "Senior",
+        "Regular",
+        "Stiff"
+      ],
+      "shaft_material": "both",
+      "loft_options": [
+        18.5,
+        21.0,
+        24.0,
+        27.5,
+        32.0,
+        37.0,
+        43.0
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "intermediate",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "intermediate",
+        "beginner",
+        "senior"
+      ],
+      "recommended_handicap_range": [
+        12,
+        28
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Cobra Darkspeed Max Driver",
+        "Cobra Air-X Driver"
+      ]
+    },
+    {
+      "Brand": "Cobra",
+      "Model": "Air-X Irons",
+      "Category": "Iron",
+      "Loft": 25.0,
+      "Lie": 62.0,
+      "Length": 38.0,
+      "Stock_Shafts": [
+        "Fujikura Ventus TR graphite 45 (Sr)",
+        "Fujikura Ventus TR graphite 55 (R)"
+      ],
+      "MSRP_Tier": "Mid",
+      "brand": "Cobra",
+      "name": "Air-X Irons",
+      "type": "Iron",
+      "forgiveness_level": "Very High",
+      "swing_speed_range": [
+        58,
+        88
+      ],
+      "shaft_flex_options": [
+        "Senior",
+        "Regular"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        19.0,
+        22.0,
+        25.0,
+        29.0,
+        33.5,
+        38.5,
+        43.5
+      ],
+      "release_year": 2023,
+      "gender": "Unisex",
+      "budget_tier": "mid-range",
+      "skill_level": "beginner",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "beginner",
+        "senior",
+        "high-handicap",
+        "slow-swing"
+      ],
+      "recommended_handicap_range": [
+        24,
+        54
+      ],
+      "lightweight": true,
+      "junior_suitable": false,
+      "starter_set_suitable": true,
+      "club_weight_category": "light",
+      "commonly_paired_with": [
+        "Cobra Air-X Driver",
+        "Cobra Darkspeed Max Driver"
+      ]
+    }
+  ],
+  "PXG_Irons": [
+    {
+      "Brand": "PXG",
+      "Model": "0311 Gen7 Irons",
+      "Category": "Iron",
+      "Loft": 27.0,
+      "Lie": 62.5,
+      "Length": 37.5,
+      "Stock_Shafts": [
+        "True Temper Dynamic Gold 105 (R300)",
+        "True Temper Dynamic Gold 105 (S300)",
+        "True Temper Dynamic Gold 105 (X100)",
+        "KBS Tour 90 (R)",
+        "KBS Tour 90 (S)",
+        "Mitsubishi MMT graphite 65 (R)",
+        "Mitsubishi MMT graphite 65 (S)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "PXG",
+      "name": "0311 Gen7 Irons",
+      "type": "Iron",
+      "forgiveness_level": "High",
+      "swing_speed_range": [
+        80,
+        108
+      ],
+      "shaft_flex_options": [
+        "Regular",
+        "Stiff",
+        "X-Stiff"
+      ],
+      "shaft_material": "both",
+      "loft_options": [
+        18.0,
+        21.0,
+        24.0,
+        27.0,
+        31.0,
+        35.5,
+        40.5,
+        45.5
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "intermediate",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "intermediate",
+        "competitive",
+        "fitter"
+      ],
+      "recommended_handicap_range": [
+        5,
+        20
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "PXG 0211 Driver",
+        "PXG 0341 XF Irons"
+      ]
+    },
+    {
+      "Brand": "PXG",
+      "Model": "0311 Gen7 P Irons",
+      "Category": "Iron",
+      "Loft": 26.0,
+      "Lie": 63.0,
+      "Length": 37.5,
+      "Stock_Shafts": [
+        "True Temper Dynamic Gold S300",
+        "True Temper Dynamic Gold X100",
+        "KBS Tour (S)",
+        "KBS Tour (X)",
+        "Nippon NS Pro Modus3 Tour 105 (S)"
+      ],
+      "MSRP_Tier": "Tour",
+      "brand": "PXG",
+      "name": "0311 Gen7 P Irons",
+      "type": "Iron",
+      "forgiveness_level": "Moderate",
+      "swing_speed_range": [
+        90,
+        115
+      ],
+      "shaft_flex_options": [
+        "Stiff",
+        "X-Stiff"
+      ],
+      "shaft_material": "steel",
+      "loft_options": [
+        21.0,
+        24.0,
+        27.0,
+        31.0,
+        35.0,
+        39.5,
+        44.5
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "advanced",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "advanced",
+        "low-handicap",
+        "competitive",
+        "tour-level"
+      ],
+      "recommended_handicap_range": [
+        0,
+        8
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "heavy",
+      "commonly_paired_with": [
+        "PXG 0311 XP Gen4 Driver",
+        "PXG 0311 Gen7 Irons"
+      ]
+    },
+    {
+      "Brand": "PXG",
+      "Model": "0341 XF Irons",
+      "Category": "Iron",
+      "Loft": 24.0,
+      "Lie": 62.0,
+      "Length": 38.0,
+      "Stock_Shafts": [
+        "True Temper Elevate 95 (Sr)",
+        "True Temper Elevate 95 (R)",
+        "True Temper Elevate 95 (S)",
+        "Mitsubishi MMT graphite 55 (Sr)",
+        "Mitsubishi MMT graphite 60 (R)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "PXG",
+      "name": "0341 XF Irons",
+      "type": "Iron",
+      "forgiveness_level": "Very High",
+      "swing_speed_range": [
+        68,
+        95
+      ],
+      "shaft_flex_options": [
+        "Senior",
+        "Regular",
+        "Stiff"
+      ],
+      "shaft_material": "both",
+      "loft_options": [
+        18.0,
+        21.0,
+        24.0,
+        28.0,
+        33.0,
+        38.0,
+        44.0
+      ],
+      "release_year": 2023,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "beginner",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "beginner",
+        "senior",
+        "high-handicap",
+        "slow-swing"
+      ],
+      "recommended_handicap_range": [
+        18,
+        54
+      ],
+      "lightweight": true,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "light",
+      "commonly_paired_with": [
+        "PXG 0211 Driver",
+        "PXG 0311 Gen7 Irons"
+      ]
+    }
+  ],
+  "Mizuno_Irons": [
+    {
+      "Brand": "Mizuno",
+      "Model": "Pro 241",
+      "Category": "Iron",
+      "Loft": 27.0,
+      "Lie": 62.5,
+      "Length": 37.5,
+      "Stock_Shafts": [
+        "True Temper Dynamic Gold S300",
+        "True Temper Dynamic Gold X100",
+        "KBS Tour (S)",
+        "Nippon NS Pro Modus3 Tour 105 (S)",
+        "Nippon NS Pro Modus3 Tour 120 (X)"
+      ],
+      "MSRP_Tier": "Tour",
+      "brand": "Mizuno",
+      "name": "Pro 241",
+      "type": "Iron",
+      "forgiveness_level": "Low",
+      "swing_speed_range": [
+        92,
+        118
+      ],
+      "shaft_flex_options": [
+        "Regular",
+        "Stiff",
+        "X-Stiff"
+      ],
+      "shaft_material": "steel",
+      "loft_options": [
+        21.0,
+        24.0,
+        27.0,
+        30.5,
+        34.5,
+        38.5,
+        43.0,
+        48.0
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "advanced",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "advanced",
+        "low-handicap",
+        "competitive",
+        "tour-level"
+      ],
+      "recommended_handicap_range": [
+        0,
+        6
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "heavy",
+      "commonly_paired_with": [
+        "Mizuno Pro 245",
+        "Mizuno ST-Z 230 Driver"
+      ]
+    },
+    {
+      "Brand": "Mizuno",
+      "Model": "Pro 245",
+      "Category": "Iron",
+      "Loft": 26.5,
+      "Lie": 62.5,
+      "Length": 37.5,
+      "Stock_Shafts": [
+        "True Temper Dynamic Gold 105 (R300)",
+        "True Temper Dynamic Gold 105 (S300)",
+        "KBS Tour 90 (R)",
+        "KBS Tour 90 (S)",
+        "Nippon NS Pro Modus3 Tour 105 (R)",
+        "Nippon NS Pro Modus3 Tour 105 (S)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "Mizuno",
+      "name": "Pro 245",
+      "type": "Iron",
+      "forgiveness_level": "Moderate",
+      "swing_speed_range": [
+        85,
+        110
+      ],
+      "shaft_flex_options": [
+        "Regular",
+        "Stiff",
+        "X-Stiff"
+      ],
+      "shaft_material": "both",
+      "loft_options": [
+        21.0,
+        24.0,
+        27.0,
+        31.0,
+        35.5,
+        40.0,
+        45.0
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "intermediate",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "intermediate",
+        "competitive",
+        "fitter"
+      ],
+      "recommended_handicap_range": [
+        4,
+        14
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Mizuno Pro 241",
+        "Mizuno ST-Z 230 Driver"
+      ]
+    },
+    {
+      "Brand": "Mizuno",
+      "Model": "JPX 925 Hot Metal",
+      "Category": "Iron",
+      "Loft": 25.5,
+      "Lie": 62.0,
+      "Length": 37.75,
+      "Stock_Shafts": [
+        "True Temper Elevate 95 (R)",
+        "True Temper Elevate 95 (S)",
+        "Nippon NS Pro 950 GH (R)",
+        "Nippon NS Pro 950 GH (S)",
+        "Mitsubishi MMT graphite 60 (R)"
+      ],
+      "MSRP_Tier": "Mid",
+      "brand": "Mizuno",
+      "name": "JPX 925 Hot Metal",
+      "type": "Iron",
+      "forgiveness_level": "High",
+      "swing_speed_range": [
+        78,
+        105
+      ],
+      "shaft_flex_options": [
+        "Regular",
+        "Stiff"
+      ],
+      "shaft_material": "both",
+      "loft_options": [
+        17.0,
+        19.5,
+        22.5,
+        25.5,
+        29.5,
+        34.0,
+        38.5,
+        43.5
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "mid-range",
+      "skill_level": "intermediate",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "intermediate",
+        "beginner",
+        "senior"
+      ],
+      "recommended_handicap_range": [
+        10,
+        28
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": true,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Mizuno ST-X 230 Driver",
+        "Mizuno Pro 245"
+      ]
+    }
+  ],
+  "Miura_Irons": [
+    {
+      "Brand": "Miura",
+      "Model": "KM-700",
+      "Category": "Iron",
+      "Loft": 27.0,
+      "Lie": 62.5,
+      "Length": 37.5,
+      "Stock_Shafts": [
+        "True Temper Dynamic Gold S300",
+        "True Temper Dynamic Gold X100",
+        "KBS Tour (S)",
+        "Nippon NS Pro Modus3 Tour 105 (S)",
+        "Nippon NS Pro 950 GH (S)"
+      ],
+      "MSRP_Tier": "Tour",
+      "brand": "Miura",
+      "name": "KM-700",
+      "type": "Iron",
+      "forgiveness_level": "Moderate",
+      "swing_speed_range": [
+        88,
+        115
+      ],
+      "shaft_flex_options": [
+        "Regular",
+        "Stiff",
+        "X-Stiff"
+      ],
+      "shaft_material": "steel",
+      "loft_options": [
+        21.0,
+        24.0,
+        27.0,
+        31.0,
+        35.5,
+        40.5,
+        45.5
+      ],
+      "release_year": 2023,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "advanced",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "advanced",
+        "low-handicap",
+        "competitive",
+        "tour-level",
+        "fitter"
+      ],
+      "recommended_handicap_range": [
+        0,
+        10
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "heavy",
+      "commonly_paired_with": [
+        "Miura CB-302",
+        "Miura TC-201 2.0"
+      ]
+    },
+    {
+      "Brand": "Miura",
+      "Model": "CB-302",
+      "Category": "Iron",
+      "Loft": 28.0,
+      "Lie": 63.0,
+      "Length": 37.5,
+      "Stock_Shafts": [
+        "True Temper Dynamic Gold S300",
+        "True Temper Dynamic Gold X100",
+        "True Temper Dynamic Gold Tour Issue X100",
+        "Nippon NS Pro Modus3 Tour 105 (S)",
+        "Nippon NS Pro Modus3 Tour 120 (X)"
+      ],
+      "MSRP_Tier": "Tour",
+      "brand": "Miura",
+      "name": "CB-302",
+      "type": "Iron",
+      "forgiveness_level": "Low",
+      "swing_speed_range": [
+        95,
+        120
+      ],
+      "shaft_flex_options": [
+        "Stiff",
+        "X-Stiff"
+      ],
+      "shaft_material": "steel",
+      "loft_options": [
+        21.0,
+        24.0,
+        28.0,
+        32.0,
+        36.0,
+        41.0,
+        46.0
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "advanced",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "advanced",
+        "low-handicap",
+        "competitive",
+        "tour-level"
+      ],
+      "recommended_handicap_range": [
+        0,
+        5
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "heavy",
+      "commonly_paired_with": [
+        "Miura KM-700",
+        "Miura TC-201 2.0"
+      ]
+    },
+    {
+      "Brand": "Miura",
+      "Model": "TC-201 2.0",
+      "Category": "Iron",
+      "Loft": 25.0,
+      "Lie": 62.5,
+      "Length": 37.5,
+      "Stock_Shafts": [
+        "True Temper Dynamic Gold 105 (S300)",
+        "KBS Tour 90 (S)",
+        "Nippon NS Pro 950 GH (S)",
+        "Nippon NS Pro Modus3 Tour 105 (S)"
+      ],
+      "MSRP_Tier": "Tour",
+      "brand": "Miura",
+      "name": "TC-201 2.0",
+      "type": "Iron",
+      "forgiveness_level": "Moderate",
+      "swing_speed_range": [
+        85,
+        112
+      ],
+      "shaft_flex_options": [
+        "Regular",
+        "Stiff"
+      ],
+      "shaft_material": "steel",
+      "loft_options": [
+        20.0,
+        23.0,
+        26.0,
+        30.0,
+        34.5,
+        39.5,
+        44.5
+      ],
+      "release_year": 2025,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "intermediate",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "intermediate",
+        "competitive",
+        "fitter",
+        "low-handicap"
+      ],
+      "recommended_handicap_range": [
+        2,
+        12
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Miura KM-700",
+        "Miura CB-302"
+      ]
+    }
+  ],
+  "Wedges": [
+    {
+      "Brand": "Titleist",
+      "Model": "Vokey SM10",
+      "Category": "Wedge",
+      "Loft": 56.0,
+      "Lie": 64.0,
+      "Length": 35.25,
+      "Stock_Shafts": [
+        "True Temper Dynamic Gold S200",
+        "True Temper Dynamic Gold S300"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "Titleist",
+      "name": "Vokey SM10",
+      "type": "Wedge",
+      "forgiveness_level": "Moderate",
+      "swing_speed_range": [
+        75,
+        120
+      ],
+      "shaft_flex_options": [
+        "Regular",
+        "Stiff"
+      ],
+      "shaft_material": "steel",
+      "loft_options": [
+        46.0,
+        48.0,
+        50.0,
+        52.0,
+        54.0,
+        56.0,
+        58.0,
+        60.0,
+        62.0
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "intermediate",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "intermediate",
+        "competitive",
+        "advanced"
+      ],
+      "recommended_handicap_range": [
+        0,
+        20
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Titleist T100 Irons (2023)",
+        "Titleist T200 Irons (2023)"
+      ]
+    },
+    {
+      "Brand": "Callaway",
+      "Model": "Jaws Raw Full-Face 2",
+      "Category": "Wedge",
+      "Loft": 56.0,
+      "Lie": 64.0,
+      "Length": 35.25,
+      "Stock_Shafts": [
+        "True Temper Dynamic Gold S200",
+        "True Temper Dynamic Gold S300"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "Callaway",
+      "name": "Jaws Raw Full-Face 2",
+      "type": "Wedge",
+      "forgiveness_level": "Moderate",
+      "swing_speed_range": [
+        75,
+        120
+      ],
+      "shaft_flex_options": [
+        "Regular",
+        "Stiff"
+      ],
+      "shaft_material": "steel",
+      "loft_options": [
+        50.0,
+        52.0,
+        54.0,
+        56.0,
+        58.0,
+        60.0
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "intermediate",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "intermediate",
+        "competitive",
+        "advanced"
+      ],
+      "recommended_handicap_range": [
+        0,
+        18
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Callaway Apex 24 Irons",
+        "Callaway Paradym Ai Smoke Irons"
+      ]
+    },
+    {
+      "Brand": "TaylorMade",
+      "Model": "MG4",
+      "Category": "Wedge",
+      "Loft": 56.0,
+      "Lie": 64.0,
+      "Length": 35.25,
+      "Stock_Shafts": [
+        "True Temper Dynamic Gold S200",
+        "True Temper Dynamic Gold S300"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "TaylorMade",
+      "name": "MG4",
+      "type": "Wedge",
+      "forgiveness_level": "Moderate",
+      "swing_speed_range": [
+        75,
+        120
+      ],
+      "shaft_flex_options": [
+        "Regular",
+        "Stiff"
+      ],
+      "shaft_material": "steel",
+      "loft_options": [
+        46.0,
+        48.0,
+        50.0,
+        52.0,
+        54.0,
+        56.0,
+        58.0,
+        60.0
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "intermediate",
+      "player_type": [
+        "adult"
+      ],
+      "target_audience": [
+        "intermediate",
+        "competitive",
+        "advanced"
+      ],
+      "recommended_handicap_range": [
+        0,
+        20
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "TaylorMade P770 Irons (2023)",
+        "TaylorMade P7CB Irons"
+      ]
+    },
+    {
+      "Brand": "Ping",
+      "Model": "Glide 4.0",
+      "Category": "Wedge",
+      "Loft": 56.0,
+      "Lie": 64.0,
+      "Length": 35.25,
+      "Stock_Shafts": [
+        "True Temper Dynamic Gold S300",
+        "Nippon NS Pro Modus3 Tour 115 (S)"
+      ],
+      "MSRP_Tier": "Premium",
+      "brand": "Ping",
+      "name": "Glide 4.0",
+      "type": "Wedge",
+      "forgiveness_level": "High",
+      "swing_speed_range": [
+        70,
+        115
+      ],
+      "shaft_flex_options": [
+        "Regular",
+        "Stiff"
+      ],
+      "shaft_material": "steel",
+      "loft_options": [
+        46.0,
+        50.0,
+        52.0,
+        54.0,
+        56.0,
+        58.0,
+        60.0,
+        64.0
+      ],
+      "release_year": 2024,
+      "gender": "Unisex",
+      "budget_tier": "premium",
+      "skill_level": "intermediate",
+      "player_type": [
+        "adult",
+        "senior"
+      ],
+      "target_audience": [
+        "intermediate",
+        "beginner",
+        "competitive"
+      ],
+      "recommended_handicap_range": [
+        0,
+        24
+      ],
+      "lightweight": false,
+      "junior_suitable": false,
+      "starter_set_suitable": false,
+      "club_weight_category": "standard",
+      "commonly_paired_with": [
+        "Ping G430 Irons",
+        "Ping i230 Irons"
+      ]
+    }
+  ],
+  "Junior_Sets": [
+    {
+      "Brand": "Callaway",
+      "Model": "XJ Junior Set (Ages 9-12)",
+      "Category": "Junior Set",
+      "Loft": 13.0,
+      "Lie": 56.0,
+      "Length": 42.0,
+      "Stock_Shafts": [
+        "Callaway Junior graphite (Flex J)"
+      ],
+      "MSRP_Tier": "Mid",
+      "brand": "Callaway",
+      "name": "XJ Junior Set (Ages 9-12)",
+      "type": "Junior Set",
+      "forgiveness_level": "Very High",
+      "swing_speed_range": [
+        40,
+        65
+      ],
+      "shaft_flex_options": [
+        "Junior"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        13.0,
+        17.0,
+        25.0,
+        33.0,
+        41.0
+      ],
+      "release_year": 2022,
+      "gender": "Unisex",
+      "budget_tier": "mid-range",
+      "skill_level": "beginner",
+      "player_type": [
+        "junior"
+      ],
+      "target_audience": [
+        "junior",
+        "beginner",
+        "parent-buyer"
+      ],
+      "recommended_handicap_range": [
+        36,
+        54
+      ],
+      "lightweight": true,
+      "junior_suitable": true,
+      "starter_set_suitable": true,
+      "club_weight_category": "light",
+      "commonly_paired_with": []
+    },
+    {
+      "Brand": "Ping",
+      "Model": "Prodi G Junior Set",
+      "Category": "Junior Set",
+      "Loft": 14.0,
+      "Lie": 56.5,
+      "Length": 42.5,
+      "Stock_Shafts": [
+        "PING Prodi G graphite (Flex J)"
+      ],
+      "MSRP_Tier": "Mid",
+      "brand": "Ping",
+      "name": "Prodi G Junior Set",
+      "type": "Junior Set",
+      "forgiveness_level": "Very High",
+      "swing_speed_range": [
+        45,
+        75
+      ],
+      "shaft_flex_options": [
+        "Junior"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        14.0,
+        19.0,
+        27.0,
+        35.0,
+        43.0
+      ],
+      "release_year": 2021,
+      "gender": "Unisex",
+      "budget_tier": "mid-range",
+      "skill_level": "beginner",
+      "player_type": [
+        "junior"
+      ],
+      "target_audience": [
+        "junior",
+        "beginner",
+        "parent-buyer"
+      ],
+      "recommended_handicap_range": [
+        36,
+        54
+      ],
+      "lightweight": true,
+      "junior_suitable": true,
+      "starter_set_suitable": true,
+      "club_weight_category": "light",
+      "commonly_paired_with": []
+    },
+    {
+      "Brand": "TaylorMade",
+      "Model": "Kalea Junior Set",
+      "Category": "Junior Set",
+      "Loft": 13.5,
+      "Lie": 56.0,
+      "Length": 42.0,
+      "Stock_Shafts": [
+        "TaylorMade Kalea graphite (Flex J)"
+      ],
+      "MSRP_Tier": "Mid",
+      "brand": "TaylorMade",
+      "name": "Kalea Junior Set",
+      "type": "Junior Set",
+      "forgiveness_level": "Very High",
+      "swing_speed_range": [
+        40,
+        70
+      ],
+      "shaft_flex_options": [
+        "Junior"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        13.5,
+        18.0,
+        26.0,
+        34.0,
+        42.0
+      ],
+      "release_year": 2023,
+      "gender": "Unisex",
+      "budget_tier": "mid-range",
+      "skill_level": "beginner",
+      "player_type": [
+        "junior"
+      ],
+      "target_audience": [
+        "junior",
+        "beginner",
+        "parent-buyer"
+      ],
+      "recommended_handicap_range": [
+        36,
+        54
+      ],
+      "lightweight": true,
+      "junior_suitable": true,
+      "starter_set_suitable": true,
+      "club_weight_category": "light",
+      "commonly_paired_with": []
+    },
+    {
+      "Brand": "Cobra",
+      "Model": "Fly-Z Junior Set",
+      "Category": "Junior Set",
+      "Loft": 13.0,
+      "Lie": 56.0,
+      "Length": 41.5,
+      "Stock_Shafts": [
+        "Cobra Fly-Z graphite (Flex J)"
+      ],
+      "MSRP_Tier": "Value",
+      "brand": "Cobra",
+      "name": "Fly-Z Junior Set",
+      "type": "Junior Set",
+      "forgiveness_level": "Very High",
+      "swing_speed_range": [
+        40,
+        65
+      ],
+      "shaft_flex_options": [
+        "Junior"
+      ],
+      "shaft_material": "graphite",
+      "loft_options": [
+        13.0,
+        18.0,
+        26.0,
+        34.0,
+        42.0
+      ],
+      "release_year": 2019,
+      "gender": "Unisex",
+      "budget_tier": "value",
+      "skill_level": "beginner",
+      "player_type": [
+        "junior"
+      ],
+      "target_audience": [
+        "junior",
+        "beginner",
+        "parent-buyer",
+        "value-shopper"
+      ],
+      "recommended_handicap_range": [
+        36,
+        54
+      ],
+      "lightweight": true,
+      "junior_suitable": true,
+      "starter_set_suitable": true,
+      "club_weight_category": "light",
+      "commonly_paired_with": []
+    }
+  ]
+}
