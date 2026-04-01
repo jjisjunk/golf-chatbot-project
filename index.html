@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>The Caddie Concierge</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#132613;--green-mid:#1c331c;--green-light:#254825;--green-bright:#3a5e3a;
+  --brass:#c9a84c;--brass-dim:#9a7d38;--brass-glow:#e8c96a;
+  --parchment:#f2ead8;--cream:#faf6ec;--fog:#c8bfa8;--birch:#8a7a62;
+  --ink:#0e1a0e;--flag:#b83232;--white:#fdfcf8;
+  --serif:'Playfair Display',Georgia,serif;
+  --body:'Crimson Pro',Georgia,serif;
+  --mono:'DM Mono',monospace;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+}
+html,body{height:100%;background:var(--green);color:var(--parchment);font-family:var(--body);overflow:hidden}
+
+/* ── LAYOUT ── */
+.shell{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
+
+/* ── HEADER ── */
+.site-header{
+  flex-shrink:0;
+  background:var(--ink);
+  border-bottom:1px solid rgba(201,168,76,.2);
+  padding:14px 28px;
+  display:flex;align-items:center;gap:16px;
+}
+.hdr-flag{width:20px;height:20px;background:var(--flag);clip-path:polygon(0 0,100% 18%,100% 82%,0 100%);flex-shrink:0}
+.hdr-title{font-family:var(--serif);font-size:1.3rem;font-weight:400;color:var(--brass);font-style:italic;white-space:nowrap}
+.hdr-tagline{font-family:var(--body);font-size:.78rem;font-weight:300;color:var(--fog);line-height:1.4;flex:1}
+.hdr-badge{font-family:var(--mono);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--flag);border:1px solid rgba(184,50,50,.4);border-radius:2px;padding:2px 6px;white-space:nowrap}
+
+/* ── KEY BANNER ── */
+.key-banner{
+  flex-shrink:0;display:flex;align-items:center;gap:12px;
+  padding:9px 28px;
+  background:rgba(201,168,76,.07);
+  border-bottom:1px solid rgba(201,168,76,.15);
+}
+.key-banner.hidden{display:none}
+.key-banner p{font-family:var(--mono);font-size:.6rem;letter-spacing:.07em;color:var(--fog);flex:1;line-height:1.5}
+.key-banner p a{color:var(--brass);text-decoration:none}
+.key-banner p a:hover{text-decoration:underline}
+.key-wrap{display:flex;gap:6px;flex-shrink:0}
+.key-input{
+  background:var(--green-mid);border:1px solid rgba(201,168,76,.25);border-radius:2px;
+  color:var(--parchment);font-family:var(--mono);font-size:.62rem;
+  padding:6px 10px;outline:none;width:210px;transition:border-color .2s
+}
+.key-input:focus{border-color:rgba(201,168,76,.5)}
+.key-input::placeholder{color:var(--birch)}
+.key-save{
+  background:var(--brass);border:none;border-radius:2px;color:var(--ink);
+  font-family:var(--mono);font-size:.6rem;font-weight:500;letter-spacing:.1em;
+  text-transform:uppercase;padding:6px 12px;cursor:pointer;transition:background .2s;white-space:nowrap
+}
+.key-save:hover{background:var(--brass-glow)}
+
+/* ── TAB BAR ── */
+.tab-bar{
+  flex-shrink:0;display:flex;
+  background:var(--ink);
+  border-bottom:1px solid rgba(201,168,76,.15);
+}
+.tab{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--birch);padding:11px 22px;cursor:pointer;border:none;background:none;
+  border-bottom:2px solid transparent;transition:color .2s,border-color .2s;
+}
+.tab:hover{color:var(--fog)}
+.tab.active{color:var(--brass);border-bottom-color:var(--brass)}
+
+/* ── PANELS ── */
+.panels{flex:1;overflow:hidden;position:relative}
+.panel{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden}
+.panel.active{display:flex}
+
+/* ══════════════════════════════════════
+   CHAT PANEL
+══════════════════════════════════════ */
+.chat-onboard{
+  flex-shrink:0;padding:16px 24px 12px;
+  border-bottom:1px solid rgba(201,168,76,.1);
+  background:var(--green-mid);
+}
+.onboard-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-dim);margin-bottom:10px}
+.onboard-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.onboard-row+.onboard-label{margin-top:4px}
+.chip{
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--fog);border:1px solid rgba(201,168,76,.2);border-radius:20px;
+  padding:5px 12px;cursor:pointer;background:none;transition:all .2s;
+}
+.chip:hover{color:var(--parchment);border-color:rgba(201,168,76,.45)}
+.chip.selected{color:var(--ink);background:var(--brass);border-color:var(--brass)}
+
+.messages{flex:1;overflow-y:auto;padding:18px 24px 8px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
+.messages::-webkit-scrollbar{width:3px}
+.messages::-webkit-scrollbar-thumb{background:var(--green-light);border-radius:2px}
+
+.msg{display:flex;flex-direction:column;gap:4px;animation:fadeUp .3s var(--ease) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{align-items:flex-end}
+.msg.assistant{align-items:flex-start}
+.msg-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--birch)}
+.bubble{
+  max-width:80%;padding:11px 16px;border-radius:3px;
+  font-family:var(--body);font-size:1rem;font-weight:300;line-height:1.72;
+  white-space:pre-wrap;word-break:break-word
+}
+.msg.user .bubble{background:var(--green-mid);border:1px solid rgba(201,168,76,.15);color:var(--parchment);border-bottom-right-radius:0}
+.msg.assistant .bubble{background:var(--green-light);border:1px solid rgba(201,168,76,.1);color:var(--white);border-bottom-left-radius:0}
+.typing .bubble{display:flex;align-items:center;gap:5px;padding:14px 16px}
+.dot{width:6px;height:6px;background:var(--brass);border-radius:50%;animation:bounce .9s infinite ease-in-out}
+.dot:nth-child(2){animation-delay:.18s}
+.dot:nth-child(3){animation-delay:.36s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-6px);opacity:1}}
+
+.input-bar{flex-shrink:0;padding:10px 24px 16px;border-top:1px solid rgba(201,168,76,.1);background:var(--green);display:flex;gap:8px;align-items:flex-end}
+.chat-input{
+  flex:1;background:var(--green-mid);border:1.5px solid rgba(201,168,76,.15);border-radius:3px;
+  color:var(--parchment);font-family:var(--body);font-size:.98rem;font-weight:300;
+  line-height:1.55;padding:10px 13px;resize:none;min-height:44px;max-height:120px;
+  outline:none;transition:border-color .2s
+}
+.chat-input:focus{border-color:rgba(201,168,76,.45)}
+.chat-input::placeholder{color:var(--birch)}
+.chat-input:disabled{opacity:.5;cursor:not-allowed}
+.send-btn{
+  background:var(--brass);border:none;border-radius:3px;color:var(--ink);
+  font-family:var(--mono);font-size:.65rem;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;padding:10px 18px;cursor:pointer;height:44px;
+  transition:background .2s,box-shadow .2s;white-space:nowrap
+}
+.send-btn:hover{background:var(--brass-glow);box-shadow:0 3px 14px rgba(201,168,76,.2)}
+.send-btn:disabled{background:var(--green-bright);color:var(--birch);cursor:not-allowed;box-shadow:none}
+.error-msg{font-family:var(--mono);font-size:.65rem;color:#d97070;text-align:center;padding:4px 24px;display:none;flex-shrink:0}
+.error-msg.show{display:block}
+
+/* ══════════════════════════════════════
+   CATALOG PANEL
+══════════════════════════════════════ */
+.catalog-toolbar{
+  flex-shrink:0;padding:14px 24px 10px;
+  background:var(--green-mid);border-bottom:1px solid rgba(201,168,76,.12);
+}
+.toolbar-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.toolbar-row:last-child{margin-bottom:0}
+.search-input{
+  flex:1;min-width:160px;background:var(--green);border:1px solid rgba(201,168,76,.2);
+  border-radius:2px;color:var(--parchment);font-family:var(--body);font-size:.92rem;
+  font-weight:300;padding:7px 12px;outline:none;transition:border-color .2s
+}
+.search-input:focus{border-color:rgba(201,168,76,.45)}
+.search-input::placeholder{color:var(--birch)}
+.filter-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--brass-dim);white-space:nowrap}
+.chip-row{display:flex;flex-wrap:wrap;gap:5px}
+
+.catalog-scroll{flex:1;overflow:auto}
+.catalog-scroll::-webkit-scrollbar{width:3px;height:3px}
+.catalog-scroll::-webkit-scrollbar-thumb{background:var(--green-light);border-radius:2px}
+
+.club-table{width:100%;border-collapse:collapse;font-family:var(--body);font-size:.9rem;min-width:700px}
+.club-table thead tr{background:var(--ink);position:sticky;top:0;z-index:5}
+.club-table th{
+  font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--brass-dim);padding:10px 14px;text-align:left;white-space:nowrap;
+  border-bottom:1px solid rgba(201,168,76,.15)
+}
+.club-table tbody tr{border-bottom:1px solid rgba(201,168,76,.07);transition:background .15s}
+.club-table tbody tr:nth-child(even){background:rgba(0,0,0,.15)}
+.club-table tbody tr:hover{background:rgba(201,168,76,.06)}
+.club-table td{padding:9px 14px;color:var(--fog);vertical-align:top;line-height:1.45}
+.club-table td strong{color:var(--parchment);font-weight:400}
+.tier-badge{
+  font-family:var(--mono);font-size:.55rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:2px 7px;border-radius:2px;
+}
+.tier-value{background:rgba(138,122,98,.2);color:var(--birch)}
+.tier-mid{background:rgba(201,168,76,.12);color:var(--brass-dim)}
+.tier-premium{background:rgba(201,168,76,.22);color:var(--brass)}
+.tier-tour{background:rgba(201,168,76,.35);color:var(--brass-glow)}
+.no-results{padding:40px 24px;text-align:center;color:var(--birch);font-family:var(--body);font-size:1rem;font-weight:300}
+
+/* ══════════════════════════════════════
+   GAPPING PANEL
+══════════════════════════════════════ */
+.gap-panel{flex:1;display:flex;flex-direction:column;overflow-y:auto;padding:24px}
+.gap-panel::-webkit-scrollbar{width:3px}
+.gap-panel::-webkit-scrollbar-thumb{background:var(--green-light);border-radius:2px}
+.gap-section{background:var(--green-mid);border:1px solid rgba(201,168,76,.12);border-radius:4px;padding:20px;margin-bottom:18px}
+.gap-section h3{font-family:var(--serif);font-size:1.15rem;font-weight:400;color:var(--brass);margin-bottom:14px;font-style:italic}
+.loft-input-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:14px}
+.loft-field{display:flex;flex-direction:column;gap:3px}
+.loft-field label{font-family:var(--mono);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--birch)}
+.loft-field input{
+  background:var(--green);border:1px solid rgba(201,168,76,.2);border-radius:2px;
+  color:var(--parchment);font-family:var(--mono);font-size:.75rem;
+  padding:7px 10px;outline:none;transition:border-color .2s
+}
+.loft-field input:focus{border-color:rgba(201,168,76,.45)}
+.analyze-btn{
+  background:var(--brass);border:none;border-radius:2px;color:var(--ink);
+  font-family:var(--mono);font-size:.65rem;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;padding:10px 20px;cursor:pointer;transition:background .2s
+}
+.analyze-btn:hover{background:var(--brass-glow)}
+.gap-results{margin-top:14px}
+.gap-item{
+  padding:10px 14px;border-radius:3px;margin-bottom:8px;
+  font-family:var(--body);font-size:.92rem;font-weight:300;line-height:1.55
+}
+.gap-ok{background:rgba(58,94,58,.3);border:1px solid rgba(58,94,58,.5);color:var(--fog)}
+.gap-warn{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);color:var(--parchment)}
+.gap-warn strong{color:var(--brass)}
+.gap-crit{background:rgba(184,50,50,.1);border:1px solid rgba(184,50,50,.3);color:var(--parchment)}
+.gap-crit strong{color:#d97070}
+
+/* ── RESPONSIVE ── */
+@media(max-width:640px){
+  .site-header{padding:12px 16px;gap:10px}
+  .hdr-tagline{display:none}
+  .key-banner{padding:8px 16px;flex-wrap:wrap}
+  .key-input{width:150px}
+  .chat-onboard,.input-bar{padding-left:16px;padding-right:16px}
+  .messages{padding-left:16px;padding-right:16px}
+  .catalog-toolbar{padding:10px 16px 8px}
+  .gap-panel{padding:16px}
+  .bubble{max-width:92%}
+  .tab{padding:10px 14px;font-size:.56rem}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="hdr-flag" aria-hidden="true"></div>
+    <div class="hdr-title">The Caddie Concierge</div>
+    <div class="hdr-tagline">Your Digital Master Fitter — Analyzing your specs, exploring premium equipment, and providing data-backed shaft recommendations.</div>
+    <div class="hdr-badge">⚠ Test Build</div>
+  </header>
+
+  <!-- API KEY BANNER -->
+  <div class="key-banner" id="keyBanner">
+    <p>Enter your Anthropic API key to activate the AI. Get one at <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>. Stored in this browser tab only.</p>
+    <div class="key-wrap">
+      <input class="key-input" id="keyInput" type="password" placeholder="sk-ant-…" aria-label="Anthropic API key" onkeydown="if(event.key==='Enter')saveKey()"/>
+      <button class="key-save" onclick="saveKey()">Save Key</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <nav class="tab-bar" role="tablist">
+    <button class="tab active" role="tab" aria-selected="true"  onclick="switchTab('chat',this)">⛳ Fitting Chat</button>
+    <button class="tab"        role="tab" aria-selected="false" onclick="switchTab('catalog',this)">📋 Club Catalog</button>
+    <button class="tab"        role="tab" aria-selected="false" onclick="switchTab('gapping',this)">📐 Gap Analysis</button>
+  </nav>
+
+  <!-- PANELS -->
+  <div class="panels">
+
+    <!-- ── CHAT PANEL ── -->
+    <section class="panel active" id="panel-chat" role="tabpanel">
+
+      <!-- Onboarding chips -->
+      <div class="chat-onboard">
+        <div class="onboard-label">Your Game (select one)</div>
+        <div class="onboard-row" id="skillRow">
+          <button class="chip" data-group="skill" data-val="beginner"     onclick="selectChip(this)">New Golfer</button>
+          <button class="chip" data-group="skill" data-val="mid"          onclick="selectChip(this)">Mid Handicap</button>
+          <button class="chip" data-group="skill" data-val="competitive"  onclick="selectChip(this)">Competitive</button>
+          <button class="chip" data-group="skill" data-val="senior"       onclick="selectChip(this)">Senior</button>
+        </div>
+        <div class="onboard-label">Budget (select all that apply)</div>
+        <div class="onboard-row" id="budgetRow">
+          <button class="chip" data-group="budget" data-val="value"     onclick="toggleChip(this)">Value / Used</button>
+          <button class="chip" data-group="budget" data-val="mid-range" onclick="toggleChip(this)">Mid-Range</button>
+          <button class="chip" data-group="budget" data-val="premium"   onclick="toggleChip(this)">Premium</button>
+        </div>
+        <div class="onboard-label">Club Types (select all that apply)</div>
+        <div class="onboard-row" id="catRow">
+          <button class="chip" data-group="category" data-val="Driver"    onclick="toggleChip(this)">Driver</button>
+          <button class="chip" data-group="category" data-val="Iron"      onclick="toggleChip(this)">Irons</button>
+          <button class="chip" data-group="category" data-val="Wedge"     onclick="toggleChip(this)">Wedges</button>
+          <button class="chip" data-group="category" data-val="Junior Set" onclick="toggleChip(this)">Junior</button>
+        </div>
+      </div>
+
+      <div class="messages" id="messages" role="log" aria-live="polite"></div>
+      <div class="error-msg" id="errorBanner" role="alert"></div>
+
+      <div class="input-bar">
+        <textarea class="chat-input" id="chatInput" rows="1" disabled
+          placeholder="Ask about club fitting, shafts, swing speed…"
+          aria-label="Your message"
+          onkeydown="handleKey(event)"
+          oninput="autoGrow(this)"></textarea>
+        <button class="send-btn" id="sendBtn" disabled onclick="sendMessage()">Send</button>
+      </div>
+    </section>
+
+    <!-- ── CATALOG PANEL ── -->
+    <section class="panel" id="panel-catalog" role="tabpanel">
+      <div class="catalog-toolbar">
+        <div class="toolbar-row">
+          <input class="search-input" id="searchInput" type="text" placeholder="Search brand, model, category…" oninput="filterCatalog()"/>
+        </div>
+        <div class="toolbar-row">
+          <span class="filter-label">Brand</span>
+          <div class="chip-row" id="brandFilter"></div>
+        </div>
+        <div class="toolbar-row">
+          <span class="filter-label">Category</span>
+          <div class="chip-row" id="catFilter"></div>
+        </div>
+        <div class="toolbar-row">
+          <span class="filter-label">Budget</span>
+          <div class="chip-row" id="budgetFilter"></div>
+        </div>
+      </div>
+      <div class="catalog-scroll">
+        <table class="club-table" id="clubTable">
+          <thead>
+            <tr>
+              <th>Brand</th>
+              <th>Model</th>
+              <th>Category</th>
+              <th>Loft</th>
+              <th>Shafts</th>
+              <th>Budget</th>
+              <th>Forgiveness</th>
+              <th>Swing Speed</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+        <div class="no-results hidden" id="noResults">No clubs match your current filters.</div>
+      </div>
+    </section>
+
+    <!-- ── GAPPING PANEL ── -->
+    <section class="panel" id="panel-gapping" role="tabpanel">
+      <div class="gap-panel">
+        <div class="gap-section">
+          <h3>Loft Gap Analyzer</h3>
+          <p style="font-family:var(--body);font-size:.9rem;font-weight:300;color:var(--fog);margin-bottom:14px;line-height:1.6">Enter the loft (in degrees) of each club in your bag from longest to shortest. Leave unused clubs blank. Ideal gapping is 4–6° between clubs.</p>
+          <div class="loft-input-grid">
+            <div class="loft-field"><label>Driver</label><input type="number" id="g-driver" placeholder="e.g. 10.5" step="0.5"/></div>
+            <div class="loft-field"><label>3-Wood</label><input type="number" id="g-3w"     placeholder="e.g. 15.0" step="0.5"/></div>
+            <div class="loft-field"><label>5-Wood</label><input type="number" id="g-5w"     placeholder="e.g. 18.0" step="0.5"/></div>
+            <div class="loft-field"><label>Hybrid</label><input type="number" id="g-hyb"    placeholder="e.g. 21.0" step="0.5"/></div>
+            <div class="loft-field"><label>4-Iron</label><input type="number" id="g-4i"     placeholder="e.g. 24.0" step="0.5"/></div>
+            <div class="loft-field"><label>5-Iron</label><input type="number" id="g-5i"     placeholder="e.g. 27.0" step="0.5"/></div>
+            <div class="loft-field"><label>6-Iron</label><input type="number" id="g-6i"     placeholder="e.g. 31.0" step="0.5"/></div>
+            <div class="loft-field"><label>7-Iron</label><input type="number" id="g-7i"     placeholder="e.g. 35.0" step="0.5"/></div>
+            <div class="loft-field"><label>8-Iron</label><input type="number" id="g-8i"     placeholder="e.g. 39.0" step="0.5"/></div>
+            <div class="loft-field"><label>9-Iron</label><input type="number" id="g-9i"     placeholder="e.g. 43.0" step="0.5"/></div>
+            <div class="loft-field"><label>PW</label><input type="number" id="g-pw"         placeholder="e.g. 47.0" step="0.5"/></div>
+            <div class="loft-field"><label>GW</label><input type="number" id="g-gw"         placeholder="e.g. 52.0" step="0.5"/></div>
+            <div class="loft-field"><label>SW</label><input type="number" id="g-sw"         placeholder="e.g. 56.0" step="0.5"/></div>
+            <div class="loft-field"><label>LW</label><input type="number" id="g-lw"         placeholder="e.g. 60.0" step="0.5"/></div>
+          </div>
+          <button class="analyze-btn" onclick="analyzeGaps()">Analyze My Gaps</button>
+          <div class="gap-results" id="gapResults"></div>
+        </div>
+
+        <div class="gap-section">
+          <h3>Quick Reference: Typical Iron Gapping</h3>
+          <table class="club-table" style="min-width:0">
+            <thead><tr><th>Club</th><th>Typical Loft Range</th><th>Ideal Gap to Next</th></tr></thead>
+            <tbody>
+              <tr><td><strong>4-Iron</strong></td><td>22–25°</td><td>3–4°</td></tr>
+              <tr><td><strong>5-Iron</strong></td><td>25–28°</td><td>3–4°</td></tr>
+              <tr><td><strong>6-Iron</strong></td><td>28–32°</td><td>4°</td></tr>
+              <tr><td><strong>7-Iron</strong></td><td>32–36°</td><td>4°</td></tr>
+              <tr><td><strong>8-Iron</strong></td><td>36–40°</td><td>4°</td></tr>
+              <tr><td><strong>9-Iron</strong></td><td>40–44°</td><td>4°</td></tr>
+              <tr><td><strong>PW</strong></td><td>44–48°</td><td>4–5°</td></tr>
+              <tr><td><strong>GW</strong></td><td>50–54°</td><td>4–6°</td></tr>
+              <tr><td><strong>SW</strong></td><td>54–58°</td><td>4°</td></tr>
+              <tr><td><strong>LW</strong></td><td>58–64°</td><td>4–6°</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /panels -->
+</div><!-- /shell -->
+
+<script>
+'use strict';
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+const state = {
+  skill: null,
+  budget: [],
+  categories: [],
+  filterBrands: [],
+  filterCats: [],
+  filterBudgets: [],
+  clubs: [],
+  history: []
+};
+
+// ── UTILITY ──────────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function norm(club) {
+  // Normalize both old-schema and new-schema entries to a unified shape
+  return {
+    Brand:    club.Brand    || club.brand    || '',
+    Model:    club.Model    || club.name     || '',
+    Category: club.Category || club.type     || '',
+    Loft:     club.Loft     != null ? club.Loft : (club.loft_options ? club.loft_options[0] : null),
+    LoftOptions: club.loft_options || (club.Loft != null ? [club.Loft] : []),
+    StockShafts: club.Stock_Shafts || club.shaft_flex_options || [],
+    ShaftMaterial: club.shaft_material || '',
+    MSRP_Tier: club.MSRP_Tier || (club.budget_tier
+      ? ({value:'Value','mid-range':'Mid',premium:'Premium',tour:'Tour'}[club.budget_tier] || club.budget_tier)
+      : ''),
+    BudgetTierRaw: club.budget_tier || (club.MSRP_Tier ? club.MSRP_Tier.toLowerCase() : ''),
+    Forgiveness: club.forgiveness_level || '',
+    SwingSpeed: club.swing_speed_range || [],
+    ReleaseYear: club.release_year || null,
+    CommonlyPairedWith: club.commonly_paired_with || [],
+    _raw: club
+  };
+}
+
+// ── API KEY ──────────────────────────────────────────────────────────────────
+function initKey() {
+  const stored = sessionStorage.getItem('caddie_key');
+  if (stored && stored.startsWith('sk-')) {
+    document.getElementById('keyBanner').classList.add('hidden');
+    enableChat();
+  }
+}
+
+function saveKey() {
+  const val = document.getElementById('keyInput').value.trim();
+  if (!val) return;
+  if (!val.startsWith('sk-')) { showError('Key should start with sk-'); return; }
+  sessionStorage.setItem('caddie_key', val);
+  document.getElementById('keyBanner').classList.add('hidden');
+  document.getElementById('keyInput').value = '';
+  enableChat();
+}
+
+function enableChat() {
+  document.getElementById('chatInput').disabled = false;
+  document.getElementById('sendBtn').disabled = false;
+  document.getElementById('chatInput').placeholder = 'Ask about club fitting, shafts, swing speed…';
+  if (state.history.length === 0) showWelcome();
+}
+
+// ── DATA LOAD ────────────────────────────────────────────────────────────────
+async function loadClubs() {
+  try {
+    const res = await fetch('GolfClubSpecs_v2.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const raw = await res.json();
+    const entries = [];
+    for (const key of Object.keys(raw)) {
+      if (key.startsWith('_')) continue;
+      if (Array.isArray(raw[key])) raw[key].forEach(c => entries.push(norm(c)));
+    }
+    state.clubs = entries;
+  } catch (e) {
+    console.warn('JSON load failed:', e.message, '— using embedded fallback');
+    state.clubs = FALLBACK_CLUBS.map(norm);
+  }
+  buildCatalog();
+  buildFilterChips();
+}
+
+// Minimal fallback so the app works even without the JSON file
+const FALLBACK_CLUBS = [
+  {brand:'TaylorMade',name:'Qi35',type:'Driver',forgiveness_level:'Moderate',swing_speed_range:[88,108],shaft_flex_options:['Regular','Stiff','X-Stiff'],shaft_material:'graphite',loft_options:[9.0,10.5,12.0],release_year:2025,budget_tier:'premium'},
+  {brand:'TaylorMade',name:'P7CB',type:'Iron',forgiveness_level:'Low',swing_speed_range:[95,118],shaft_flex_options:['Stiff','X-Stiff'],shaft_material:'steel',loft_options:[21,24,28,32,36,41,47],release_year:2025,budget_tier:'premium'},
+  {brand:'Callaway',name:'Elyte',type:'Driver',forgiveness_level:'High',swing_speed_range:[80,105],shaft_flex_options:['Senior','Regular','Stiff'],shaft_material:'graphite',loft_options:[9.0,10.5,12.0],release_year:2025,budget_tier:'premium'},
+  {brand:'Titleist',name:'GT2',type:'Driver',forgiveness_level:'Moderate',swing_speed_range:[85,110],shaft_flex_options:['Regular','Stiff','X-Stiff'],shaft_material:'graphite',loft_options:[8,9,10,11],release_year:2024,budget_tier:'premium'},
+  {brand:'Titleist',name:'T100 Irons (2023)',type:'Iron',forgiveness_level:'Low',swing_speed_range:[95,118],shaft_flex_options:['Regular','Stiff','X-Stiff'],shaft_material:'steel',loft_options:[21,24,27.5,31.5,36,41,46],release_year:2023,budget_tier:'premium'},
+  {brand:'Ping',name:'G430 Max',type:'Driver',forgiveness_level:'Very High',swing_speed_range:[75,105],shaft_flex_options:['Senior','Regular','Stiff'],shaft_material:'graphite',loft_options:[9.0,10.5,12.0],release_year:2023,budget_tier:'premium'},
+  {brand:'Ping',name:'i230 Irons',type:'Iron',forgiveness_level:'Moderate',swing_speed_range:[85,112],shaft_flex_options:['Regular','Stiff','X-Stiff'],shaft_material:'both',loft_options:[21,24,27.5,31.5,36,41,46],release_year:2022,budget_tier:'premium'},
+];
+
+// ── CHIPS ────────────────────────────────────────────────────────────────────
+function selectChip(btn) {
+  // Single-select within group
+  const group = btn.dataset.group;
+  document.querySelectorAll(`.chip[data-group="${group}"]`).forEach(b => {
+    b.classList.remove('selected');
+    b.setAttribute('aria-pressed','false');
+  });
+  btn.classList.add('selected');
+  btn.setAttribute('aria-pressed','true');
+  state[group] = btn.dataset.val;
+}
+
+function toggleChip(btn) {
+  // Multi-select
+  const isOn = btn.classList.toggle('selected');
+  btn.setAttribute('aria-pressed', String(isOn));
+  const group = btn.dataset.group;
+  const val   = btn.dataset.val;
+  const arr   = state[group] || (state[group] = []);
+  if (isOn) { if (!arr.includes(val)) arr.push(val); }
+  else       { const i = arr.indexOf(val); if (i > -1) arr.splice(i,1); }
+}
+
+function toggleFilterChip(btn, stateKey) {
+  const isOn = btn.classList.toggle('selected');
+  const val  = btn.dataset.val;
+  const arr  = state[stateKey];
+  if (isOn) { if (!arr.includes(val)) arr.push(val); }
+  else       { const i = arr.indexOf(val); if (i > -1) arr.splice(i,1); }
+  filterCatalog();
+}
+
+// ── CATALOG ──────────────────────────────────────────────────────────────────
+function buildCatalog() {
+  renderTable(state.clubs);
+}
+
+function buildFilterChips() {
+  const brands   = [...new Set(state.clubs.map(c => c.Brand))].sort();
+  const cats     = [...new Set(state.clubs.map(c => c.Category))].sort();
+  const budgets  = [...new Set(state.clubs.map(c => c.MSRP_Tier).filter(Boolean))].sort();
+
+  const brandEl  = document.getElementById('brandFilter');
+  const catEl    = document.getElementById('catFilter');
+  const budgEl   = document.getElementById('budgetFilter');
+
+  brandEl.innerHTML = '';
+  catEl.innerHTML   = '';
+  budgEl.innerHTML  = '';
+
+  brands.forEach(b => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.dataset.val = b;
+    btn.textContent = b;
+    btn.onclick = () => toggleFilterChip(btn, 'filterBrands');
+    brandEl.appendChild(btn);
+  });
+  cats.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.dataset.val = c;
+    btn.textContent = c;
+    btn.onclick = () => toggleFilterChip(btn, 'filterCats');
+    catEl.appendChild(btn);
+  });
+  budgets.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.dataset.val = t;
+    btn.textContent = t;
+    btn.onclick = () => toggleFilterChip(btn, 'filterBudgets');
+    budgEl.appendChild(btn);
+  });
+}
+
+function filterCatalog() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const { filterBrands, filterCats, filterBudgets } = state;
+
+  const filtered = state.clubs.filter(c => {
+    if (filterBrands.length  && !filterBrands.includes(c.Brand))    return false;
+    if (filterCats.length    && !filterCats.includes(c.Category))   return false;
+    if (filterBudgets.length && !filterBudgets.includes(c.MSRP_Tier)) return false;
+    if (q) {
+      const hay = [c.Brand, c.Model, c.Category].join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  renderTable(filtered);
+  document.getElementById('noResults').classList.toggle('hidden', filtered.length > 0);
+}
+
+function renderTable(clubs) {
+  const tbody = document.getElementById('tableBody');
+  if (!clubs.length) { tbody.innerHTML = ''; return; }
+
+  tbody.innerHTML = clubs.map(c => {
+    const shafts = c.StockShafts.length ? esc(c.StockShafts.slice(0,2).join(', ') + (c.StockShafts.length > 2 ? '…' : '')) : '—';
+    const loft   = c.Loft != null ? c.Loft + '°' : (c.LoftOptions.length ? c.LoftOptions[0] + '°' : '—');
+    const tier   = c.MSRP_Tier || '—';
+    const tierCls= {Value:'tier-value',Mid:'tier-mid',Premium:'tier-premium',Tour:'tier-tour'}[tier] || 'tier-mid';
+    const speed  = c.SwingSpeed.length === 2 ? c.SwingSpeed[0] + '–' + c.SwingSpeed[1] + ' mph' : '—';
+    return `<tr>
+      <td><strong>${esc(c.Brand)}</strong></td>
+      <td>${esc(c.Model)}</td>
+      <td>${esc(c.Category)}</td>
+      <td>${esc(loft)}</td>
+      <td style="font-size:.82rem;max-width:200px">${shafts}</td>
+      <td><span class="tier-badge ${tierCls}">${esc(tier)}</span></td>
+      <td>${esc(c.Forgiveness || '—')}</td>
+      <td style="font-size:.82rem">${esc(speed)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── GAP ANALYSIS ─────────────────────────────────────────────────────────────
+function analyzeGaps() {
+  const ids = ['driver','3w','5w','hyb','4i','5i','6i','7i','8i','9i','pw','gw','sw','lw'];
+  const labels = ['Driver','3-Wood','5-Wood','Hybrid','4-Iron','5-Iron','6-Iron','7-Iron','8-Iron','9-Iron','PW','GW','SW','LW'];
+
+  const clubs = [];
+  ids.forEach((id, i) => {
+    const val = parseFloat(document.getElementById('g-' + id).value);
+    if (!isNaN(val) && val > 0) clubs.push({ label: labels[i], loft: val });
+  });
+
+  if (clubs.length < 2) {
+    document.getElementById('gapResults').innerHTML =
+      '<div class="gap-item gap-warn">Please enter at least two club lofts to analyze gaps.</div>';
+    return;
+  }
+
+  // Sort by loft ascending
+  clubs.sort((a,b) => a.loft - b.loft);
+
+  let html = '';
+  for (let i = 0; i < clubs.length - 1; i++) {
+    const curr = clubs[i];
+    const next = clubs[i + 1];
+    const gap  = +(next.loft - curr.loft).toFixed(1);
+
+    if (gap < 0) continue; // skip if out of order
+    if (gap < 3) {
+      html += `<div class="gap-item gap-crit">
+        <strong>⚠ Overlap:</strong> ${esc(curr.label)} (${curr.loft}°) → ${esc(next.label)} (${next.loft}°) — only <strong>${gap}°</strong> gap. These clubs likely produce very similar distances. Consider removing one.
+      </div>`;
+    } else if (gap > 6) {
+      const midLoft = +(curr.loft + gap / 2).toFixed(1);
+      html += `<div class="gap-item gap-warn">
+        <strong>Gap detected:</strong> ${esc(curr.label)} (${curr.loft}°) → ${esc(next.label)} (${next.loft}°) — <strong>${gap}°</strong> gap. Consider adding a club around <strong>${midLoft}°</strong> to fill this range.
+      </div>`;
+    } else {
+      html += `<div class="gap-item gap-ok">
+        ✓ ${esc(curr.label)} (${curr.loft}°) → ${esc(next.label)} (${next.loft}°) — ${gap}° gap. Good gapping.
+      </div>`;
+    }
+  }
+
+  document.getElementById('gapResults').innerHTML = html ||
+    '<div class="gap-item gap-ok">✓ All gaps look good!</div>';
+}
+
+// ── CHAT ─────────────────────────────────────────────────────────────────────
+function showWelcome() {
+  appendMsg('assistant', `Welcome to The Caddie Concierge.
+
+I'm your Digital Master Fitter — ready to analyze swing speed, recommend shafts, compare equipment, and find the right clubs for your game.
+
+To get started, tell me:
+  • Your swing speed (or approximate distance)
+  • What you're looking to fit — Driver, Irons, Wedges?
+  • Any specific brands or models you're curious about
+
+You can also use the selection chips above to set your skill level and preferences, which I'll factor into every recommendation.`);
+}
+
+function appendMsg(role, text) {
+  const el = document.createElement('div');
+  el.className = 'msg ' + role;
+  el.innerHTML = `<div class="msg-label">${role === 'user' ? 'You' : 'Caddie Concierge'}</div>
+    <div class="bubble">${esc(text)}</div>`;
+  document.getElementById('messages').appendChild(el);
+  scrollBottom();
+}
+
+function showTyping() {
+  const el = document.createElement('div');
+  el.className = 'msg assistant typing';
+  el.id = 'typing-indicator';
+  el.innerHTML = `<div class="msg-label">Caddie Concierge</div>
+    <div class="bubble" aria-hidden="true"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+  document.getElementById('messages').appendChild(el);
+  scrollBottom();
+}
+
+function removeTyping() {
+  const el = document.getElementById('typing-indicator');
+  if (el) el.remove();
+}
+
+function scrollBottom() {
+  const m = document.getElementById('messages');
+  m.scrollTop = m.scrollHeight;
+}
+
+function showError(msg) {
+  const b = document.getElementById('errorBanner');
+  b.textContent = msg;
+  b.classList.add('show');
+  setTimeout(() => b.classList.remove('show'), 6000);
+}
+
+function autoGrow(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function setLoading(on) {
+  const btn = document.getElementById('sendBtn');
+  const inp = document.getElementById('chatInput');
+  btn.disabled = on;
+  btn.textContent = on ? '…' : 'Send';
+  btn.setAttribute('aria-busy', String(on));
+  inp.disabled = on;
+}
+
+// ── SYSTEM PROMPT ─────────────────────────────────────────────────────────────
+function buildSystem() {
+  const skillMap = {
+    beginner:    'a new or high-handicap golfer (HCP 20+) who needs maximum forgiveness and an easy learning curve',
+    mid:         'a mid-handicap golfer (HCP 10–20) looking for a balance of forgiveness and performance',
+    competitive: 'a low-handicap or scratch golfer who prioritises workability, feel, and precision',
+    senior:      'a senior golfer who needs lightweight clubs, senior-flex shafts, and maximum distance at moderate swing speeds'
+  };
+  const budgetStr = state.budget.length ? state.budget.join(', ') : 'any budget';
+  const catStr    = state.categories.length ? state.categories.join(', ') : 'all club types';
+  const profile   = skillMap[state.skill] || 'an unspecified golfer';
+
+  // Flatten clubs for context
+  const clubSummary = state.clubs.slice(0, 60).map(c =>
+    `${c.Brand} ${c.Model} (${c.Category}, ${c.MSRP_Tier || c.BudgetTierRaw}, ` +
+    `loft: ${c.Loft || (c.LoftOptions[0] || '?')}°, ` +
+    `shafts: ${c.StockShafts.slice(0,2).join('/')||c.ShaftMaterial}, ` +
+    `forgiveness: ${c.Forgiveness}, swing: ${c.SwingSpeed.join('–')} mph)`
+  ).join('\n');
+
+  return `You are The Caddie Concierge — a world-class master club fitter with 20+ years of experience fitting Tour professionals and amateur golfers. You combine deep technical knowledge with practical, actionable advice.
+
+USER PROFILE:
+- Golfer type: ${profile}
+- Budget preference: ${budgetStr}
+- Club interests: ${catStr}
+
+YOUR RESPONSIBILITIES:
+1. SHAFT RECOMMENDATIONS: Always recommend specific shaft models with flex, weight, and kick-point. Base on swing speed:
+   - Under 75 mph: Senior/Ladies flex, 40–55g graphite
+   - 75–90 mph: Regular flex, 50–65g graphite
+   - 90–100 mph: Regular/Stiff flex, 60–70g
+   - 100–110 mph: Stiff flex, 65–75g (graphite) or 105–115g (steel irons)
+   - 110+ mph: X-Stiff flex, 70–80g (driver), 120g+ (steel irons)
+   Example shafts to recommend:
+   - Fujikura Ventus TR (Blue=mid, Red=high launch, Black=low launch)
+   - Mitsubishi Tensei AV White (mid-launch, tour-proven)
+   - Project X HZRDUS (low spin, stiff tip)
+   - True Temper Dynamic Gold (steel irons, tour standard)
+   - KBS Tour, Nippon NS Pro Modus3 (steel iron alternatives)
+
+2. CLUB DATABASE: You have access to the following clubs. If a club is in this list, cite its exact specs:
+${clubSummary}
+
+3. UNKNOWN CLUBS: If asked about a club NOT in the database, say:
+   "This model isn't in the current registry, but based on 2025–2026 specs..." and provide your best technical estimate.
+
+4. GAPPING: If a user mentions their set composition, proactively identify gaps >6° and suggest fills.
+
+5. TECHNICAL DEPTH: Always explain WHY — why a shaft weight matters, why lie angle affects shot shape, why loft affects distance gaps.
+
+6. FORMAT: Use clear line breaks. No markdown headers. Be direct and specific. Think out loud like a fitter on a launch monitor.`;
+}
+
+// ── API CALL ──────────────────────────────────────────────────────────────────
+async function sendMessage() {
+  const inp  = document.getElementById('chatInput');
+  const text = inp.value.trim();
+  if (!text) return;
+
+  const key = sessionStorage.getItem('caddie_key') || '';
+  if (!key) {
+    document.getElementById('keyBanner').classList.remove('hidden');
+    showError('Please enter your Anthropic API key first.');
+    return;
+  }
+
+  appendMsg('user', text);
+  state.history.push({ role: 'user', content: text });
+  inp.value = '';
+  inp.style.height = 'auto';
+  setLoading(true);
+  showTyping();
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2048,
+        system: buildSystem(),
+        messages: state.history
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      if (res.status === 401) {
+        sessionStorage.removeItem('caddie_key');
+        document.getElementById('keyBanner').classList.remove('hidden');
+        throw new Error('Invalid API key — please enter a new one.');
+      }
+      throw new Error(err?.error?.message || 'HTTP ' + res.status);
+    }
+
+    const data  = await res.json();
+    const reply = data.content.map(b => b.text || '').join('');
+    removeTyping();
+    appendMsg('assistant', reply);
+    state.history.push({ role: 'assistant', content: reply });
+
+  } catch (err) {
+    removeTyping();
+    showError('Error: ' + err.message);
+  } finally {
+    setLoading(false);
+  }
+}
+
+// ── TABS ─────────────────────────────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.remove('active');
+    t.setAttribute('aria-selected','false');
+  });
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  btn.setAttribute('aria-selected','true');
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+// ── KEYBOARD NAV ─────────────────────────────────────────────────────────────
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' || e.key === ' ') {
+    const t = e.target;
+    if (t.classList.contains('chip') && !t.closest('.input-bar')) {
+      e.preventDefault();
+      t.onclick && t.onclick();
+    }
+  }
+});
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+initKey();
+loadClubs();
+</script>
+</body>
+</html>
